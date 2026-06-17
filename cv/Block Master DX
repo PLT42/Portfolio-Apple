@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <!-- VIEWPORT CRITIQUE POUR IOS : viewport-fit=cover permet d'utiliser tout l'écran -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- MÉTADONNÉES PWA / IOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Block Master">
+    <meta name="format-detection" content="telephone=no">
+    
+    <title>Block Master DX</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&family=Vt323&family=Quicksand:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* --- CYBERPUNK DEFAULT --- */
+            --bg-color: #050510;
+            --text-color: #e0faff;
+            --accent-primary: #00f3ff;
+            --accent-secondary: #ff00ff;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --font-main: 'Orbitron', sans-serif;
+            --btn-bg: rgba(255, 255, 255, 0.1);
+            --btn-border: 1px solid rgba(0, 243, 255, 0.5);
+            --radius: 12px;
+            --shadow-glow: 0 0 10px var(--accent-primary);
+            --arrow-fill: transparent;
+            --arrow-stroke: #00f3ff;
+        }
+
+        /* --- THEME OVERRIDES --- */
+        body.gameboy {
+            --bg-color: #8b9c0f; --text-color: #0f380f; --accent-primary: #0f380f; --accent-secondary: #306230;
+            --glass-bg: transparent; --font-main: 'Press Start 2P', cursive; --btn-bg: #306230; --btn-border: 2px solid #0f380f;
+            --radius: 4px; --shadow-glow: none; --arrow-fill: transparent; --arrow-stroke: #1a1a1a;
+        }
+        body.gbc {
+            --bg-color: #663399; /* Atomic Purple */
+            --text-color: #000; --accent-primary: #333; --accent-secondary: #555;
+            --glass-bg: #f0f0f0; --font-main: 'Press Start 2P', cursive; --btn-bg: #444; --btn-border: none;
+            --radius: 20px; --shadow-glow: none; --arrow-fill: transparent; --arrow-stroke: #222;
+        }
+        body.nes {
+            --bg-color: #222; --text-color: #fff; --accent-primary: #d32f2f; --accent-secondary: #fbc02d;
+            --glass-bg: #000; --font-main: 'Press Start 2P', cursive; --btn-bg: #555; --btn-border: 4px solid #fff;
+            --radius: 0px; --shadow-glow: none; --arrow-fill: transparent; --arrow-stroke: #fff;
+        }
+        body.pixel {
+            --bg-color: #1a1a2e; --text-color: #fff; --accent-primary: #ff4d6d; --accent-secondary: #4cc9f0;
+            --glass-bg: rgba(22, 33, 62, 0.8); --font-main: 'Press Start 2P', cursive; --btn-bg: #16213e; --btn-border: 4px solid #fff;
+            --radius: 0px; --shadow-glow: 4px 4px 0 rgba(0,0,0,0.5); --arrow-fill: transparent; --arrow-stroke: #fff;
+        }
+        body.oled {
+            --bg-color: #000; --text-color: #fff; --accent-primary: #fff; --accent-secondary: #888;
+            --glass-bg: #000; --font-main: 'Orbitron', sans-serif; --btn-bg: #000; --btn-border: 1px solid #fff;
+            --radius: 0px; --shadow-glow: none; --arrow-fill: transparent; --arrow-stroke: #fff;
+        }
+        body.liquid {
+            --bg-color: #fce4ec; --text-color: #2c3e50; --accent-primary: #ff6b6b; --accent-secondary: #4ecdc4;
+            --glass-bg: rgba(255, 255, 255, 0.25); --font-main: 'Quicksand', sans-serif; --btn-bg: rgba(255, 255, 255, 0.4);
+            --btn-border: 1px solid rgba(255, 255, 255, 0.6); --radius: 25px; --shadow-glow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            --arrow-fill: transparent; --arrow-stroke: #fff;
+        }
+        body.liquid { background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: gradientBG 15s ease infinite; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        body.eco-mode { --shadow-glow: none !important; animation: none !important; }
+        body.eco-mode * { box-shadow: none !important; text-shadow: none !important; backdrop-filter: none !important; }
+
+        body {
+            background-color: var(--bg-color); margin: 0; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            overflow: hidden; 
+            /* Empêche les comportements natifs indésirables */
+            touch-action: none; 
+            -webkit-user-select: none; user-select: none;
+            -webkit-touch-callout: none;
+            
+            color: var(--text-color); font-family: var(--font-main); transition: background 0.3s;
+            
+            /* GESTION SAFE AREA IOS (Encoche et Barre du bas) */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }
+
+        /* --- LAYOUT --- */
+        #game-wrapper { position: relative; display: flex; padding: 20px; transition: all 0.3s; gap: 20px; align-items: flex-start; }
+        
+        body.cyberpunk #game-wrapper, body.oled #game-wrapper {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px; padding: 10px;
+        }
+        body.gameboy #game-wrapper {
+            background-color: #9bbc0f; border: 4px solid #0f380f; box-shadow: 0 0 0 12px #c4cfa1, 0 0 0 16px #8b9c0f, 20px 20px 0 rgba(0,0,0,0.2); border-radius: 4px 4px 40px 4px; padding: 15px; gap: 5px; align-items: flex-end;
+        }
+        body.gbc #game-wrapper {
+            background-color: #dedede; border: 10px solid #444; box-shadow: 0 0 0 15px #663399, inset 2px 2px 5px rgba(0,0,0,0.5), 20px 20px 0 rgba(0,0,0,0.2); border-radius: 5px 5px 40px 5px; padding: 0; gap: 0;
+        }
+        /* Renommé pour éviter le copyright */
+        body.gbc #game-wrapper::before {
+            content: "POCKET COLOR"; position: absolute; top: 12px; left: 50%; transform: translateX(-50%); color: #ccc; font-size: 10px; font-family: sans-serif; font-style: italic; font-weight:900; z-index: 10; text-shadow: 1px 1px 0 rgba(0,0,0,0.5); width:100%; text-align:center;
+        }
+        body.gbc #game-wrapper::after { content: "🔴"; font-size: 6px; position:absolute; top: 35%; left: 8px; opacity: 0.8; animation: blink 2s infinite; }
+        @keyframes blink { 50% { opacity: 0.3; } }
+        body.pixel #game-wrapper {
+            background: linear-gradient(to bottom, #2e2b44, #1a1a2e); padding: 15px; border: 4px solid #fff; box-shadow: 10px 10px 0 #000;
+        }
+        body.liquid #game-wrapper { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px); border-radius: 30px; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2); border: 1px solid rgba(255, 255, 255, 0.18); padding: 25px; gap: 25px; }
+
+        /* --- CANVAS --- */
+        canvas#tetris { display: block; background: rgba(0, 0, 0, 0.8); border: 2px solid var(--accent-primary); width: 200px; height: 400px; image-rendering: pixelated; box-shadow: var(--shadow-glow); }
+        body.gameboy canvas#tetris { background: #9bbc0f; border: 2px solid #0f380f; border-right: none; opacity: 0.9; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.1); }
+        body.gbc canvas#tetris { background: #fff; border: none; border-right: 1px solid #aaa; box-shadow: none; margin-top: 30px; }
+        body.oled canvas#tetris { background: #000; border: 2px solid #fff; box-shadow: none; }
+        body.nes canvas#tetris { background: #000; border: 4px solid #fff; box-shadow: none; }
+        body.pixel canvas#tetris { background: rgba(0,0,0,0.3); border: 4px solid #fff; box-shadow: none; }
+        body.liquid canvas#tetris { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255,255,255,0.5); border-radius: 15px; box-shadow: inset 0 0 20px rgba(255,255,255,0.2); image-rendering: auto; }
+
+        /* --- UI PANEL --- */
+        #ui-panel { display: flex; flex-direction: column; width: 110px; gap: 15px; justify-content: flex-start; }
+        body.gameboy #ui-panel { border: 2px solid #0f380f; border-left: 2px solid #306230; background: #9bbc0f; height: 400px; width: 120px; padding: 5px; gap: 10px; box-sizing: border-box; }
+        body.gbc #ui-panel { background: #dedede; height: 400px; padding: 10px; gap: 10px; box-sizing: border-box; border-left: 1px solid #aaa; margin-top: 30px; }
+        
+        .hud-box { background: var(--glass-bg); padding: 10px; border-radius: var(--radius); text-align: center; border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(5px); }
+        body.gameboy .hud-box, body.gbc .hud-box { background: transparent; border: none; text-align: right; padding: 5px 0; backdrop-filter: none; }
+        body.oled .hud-box { border: 1px solid #fff; }
+        body.nes .hud-box { background: #000; border: 2px solid #fff; box-shadow: none; color: #fff; text-align: left; padding: 5px; }
+        body.pixel .hud-box { background: #2e2b44; border: 2px solid #fff; box-shadow: 4px 4px 0 rgba(0,0,0,0.5); color: #fff; }
+        body.liquid .hud-box { background: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.4); color: #2c3e50; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+        .hud-label { font-size: 0.7rem; color: var(--accent-primary); margin-bottom: 5px; letter-spacing: 1px; }
+        .hud-value { font-size: 1.2rem; font-weight: bold; }
+
+        /* --- OVERLAY --- */
+        #overlay, #settings-modal, #game-over-modal {
+            position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(8px); z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.3s;
+            /* Respect Safe Area for fullscreen overlays */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        body.gameboy #overlay, body.gameboy #game-over-modal { background: #9bbc0f; backdrop-filter: none; }
+        body.gbc #overlay, body.gbc #game-over-modal { background: #dedede; backdrop-filter: none; }
+        body.oled #overlay, body.oled #game-over-modal { background: #000; backdrop-filter: none; }
+        body.pixel #overlay, body.pixel #game-over-modal { background: rgba(30, 20, 50, 0.95); }
+        body.liquid #overlay, body.liquid #game-over-modal { background: rgba(255,255,255,0.6); backdrop-filter: blur(20px); }
+
+        .menu-container { width: 85%; max-width: 350px; text-align: center; }
+        /* GENERIC TITLE */
+        h1 { font-size: 2.5rem; margin-bottom: 20px; text-shadow: 0 0 15px var(--accent-secondary); color: var(--accent-primary); text-transform: uppercase; letter-spacing: 2px; line-height: 1; }
+        body.gbc h1 { background: linear-gradient(to right, #f00, #ff0, #0f0, #00f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 2px 2px 0px rgba(0,0,0,0.1); font-family: 'Press Start 2P', cursive; }
+        body.oled h1 { text-shadow: none; }
+        body.pixel h1 { color: #fff; text-shadow: 4px 4px 0 #ff4d6d; font-family: 'Press Start 2P', cursive; line-height: 1.5; }
+        body.liquid h1 { color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.2); letter-spacing: 0; font-weight: 700; }
+
+        .high-score-display { background: var(--btn-bg); padding: 15px; margin-bottom: 25px; border-radius: var(--radius); color: var(--text-color); border: var(--btn-border); }
+
+        button, select { width: 100%; padding: 12px; margin: 6px 0; background: var(--btn-bg); border: var(--btn-border); color: var(--text-color); font-family: inherit; font-size: 0.85rem; cursor: pointer; border-radius: var(--radius); box-shadow: 0 4px 10px rgba(0,0,0,0.3); text-transform: uppercase; transition: all 0.2s ease; font-weight: bold; }
+        button:hover:not(:disabled) { filter: brightness(1.2); transform: translateY(-2px); }
+        button:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        
+        button:disabled, select:disabled { 
+            opacity: 0.4; cursor: not-allowed; filter: grayscale(1); 
+            background: #333 !important; color: #888 !important; border: 1px solid #555 !important;
+        }
+        
+        body.gameboy button { color: #9bbc0f; box-shadow: 3px 3px 0 #0f380f; }
+        body.gbc button { background: #663399; color: #fff; border: 2px solid rgba(255,255,255,0.2); border-radius: 30px; box-shadow: 0 4px 0 #331a4d; }
+        body.gbc button:active:not(:disabled) { box-shadow: 0 0 0 #331a4d; }
+        body.oled button { background: #000; border: 2px solid #fff; color: #fff; box-shadow: none; }
+        body.oled button:hover:not(:disabled) { background: #fff; color: #000; }
+        body.nes button { background: #b71c1c; border: 4px solid #fff; color: #fff; box-shadow: 4px 4px 0 #000; border-radius: 0; }
+        body.nes button:active:not(:disabled) { transform: translate(4px, 4px); box-shadow: none; }
+        body.pixel button { background: #4cc9f0; border: 4px solid #fff; color: #000; box-shadow: 4px 4px 0 rgba(0,0,0,0.5); border-radius: 0; }
+        body.pixel button:active:not(:disabled) { transform: translate(4px, 4px); box-shadow: none; }
+        body.liquid button, body.liquid select { background: rgba(255,255,255,0.5); border: 1px solid #fff; color: #333; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        
+        .btn-play { background: var(--accent-primary); color: var(--bg-color); font-size: 1.1rem; margin-top: 15px; box-shadow: 0 0 20px var(--accent-primary); border: none; padding: 15px; }
+        body.oled .btn-play { background: #fff; color: #000; box-shadow: none; }
+        body.gbc .btn-play { background: linear-gradient(#ff0055, #cc0044); color: white; box-shadow: 0 5px 0 #990033; border:none; }
+        body.pixel .btn-play { background: #ff4d6d; color: #fff; }
+        body.liquid .btn-play { background: #fff; color: #ff6b6b; border: 2px solid #ff6b6b; }
+        
+        .settings-icon-btn { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+
+        /* --- CONTROLS --- */
+        #mobile-controls { display: none; width: 100%; max-width: 450px; margin-top: 25px; padding: 0 20px; justify-content: space-between; box-sizing: border-box; align-items: center; padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+        @media (max-width: 800px) { #mobile-controls { display: flex; } }
+        
+        .d-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0px; width: 160px; }
+        .ctrl-btn { height: 55px; width: 55px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; user-select: none; transition: transform 0.1s; position: relative; -webkit-tap-highlight-color: transparent; }
+        
+        /* New Rounded SVG Arrows */
+        .svg-arrow { width: 34px; height: 34px; pointer-events: none; fill: var(--arrow-fill); stroke: var(--arrow-stroke); stroke-width: 3px; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* Cyberpunk */
+        body.cyberpunk .ctrl-btn { background: rgba(0, 243, 255, 0.1); border: 1px solid var(--accent-primary); border-radius: 12px; margin: 4px; box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); }
+        body.cyberpunk .ctrl-btn:active { background: var(--accent-primary); box-shadow: 0 0 15px var(--accent-primary); }
+        body.cyberpunk .ctrl-btn:active .svg-arrow { fill: #000; }
+
+        /* GBC / GB AUTHENTIC D-PAD CROSS */
+        body.gameboy .d-pad, body.gbc .d-pad { background: transparent; gap: 0; }
+        body.gameboy .ctrl-btn, body.gbc .ctrl-btn { background: #222; border: none; box-shadow: none; border-radius: 0; margin: 0; }
+        body.gameboy .d-pad div:nth-child(2), body.gbc .d-pad div:nth-child(2) { background: #222; border-radius: 4px 4px 0 0; opacity: 1; visibility: visible !important; pointer-events: none; }
+        body.gameboy #btn-left, body.gbc #btn-left { border-radius: 4px 0 0 4px; }
+        body.gameboy #btn-right, body.gbc #btn-right { border-radius: 0 4px 4px 0; }
+        body.gameboy #btn-down, body.gbc #btn-down { border-radius: 0 0 4px 4px; }
+        body.gameboy .d-pad div:nth-child(5), body.gbc .d-pad div:nth-child(5) { background: #222; visibility: visible !important; background-image: radial-gradient(circle, #1a1a1a 20%, #222 60%); }
+        body.gameboy .svg-arrow, body.gbc .svg-arrow { fill: none; stroke: #444; stroke-width: 4px; width: 24px; height: 24px; }
+        body.gameboy .ctrl-btn:active, body.gbc .ctrl-btn:active { background: #111; }
+
+        body.nes .ctrl-btn { background: #111; border-radius: 0; border: 2px solid #fff; margin: 2px; }
+        body.nes .ctrl-btn:active { background: #333; }
+        
+        body.oled .ctrl-btn { background: #000; border: 1px solid #fff; border-radius: 50%; margin: 4px; }
+        body.oled .ctrl-btn:active { background: #fff; }
+        body.oled .ctrl-btn:active .svg-arrow { stroke: #000; fill: #000; }
+        
+        body.pixel .ctrl-btn { background: #4cc9f0; border: 4px solid #fff; border-radius: 0; margin: 4px; box-shadow: 4px 4px 0 rgba(0,0,0,0.5); }
+        body.pixel .ctrl-btn:active { transform: translate(4px, 4px); box-shadow: none; }
+        body.pixel .svg-arrow { fill: #000; stroke: none; }
+        
+        body.liquid .ctrl-btn { background: rgba(255,255,255,0.4); border: 1px solid #fff; border-radius: 50%; margin: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        body.liquid .ctrl-btn:active { background: #fff; transform: scale(0.9); }
+        body.liquid .svg-arrow { fill: none; stroke: #fff; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
+        
+        .round-btn { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; transition: all 0.1s; -webkit-tap-highlight-color: transparent; }
+        body.cyberpunk .round-btn { border: 2px solid var(--accent-secondary); color: var(--accent-secondary); background: rgba(255, 0, 255, 0.1); box-shadow: 0 0 15px var(--accent-secondary); }
+        body.cyberpunk .round-btn:active { background: var(--accent-secondary); color: #000; }
+        body.gameboy .round-btn { background: #8b1d1d; color: #9bbc0f; box-shadow: 2px 4px 0 #521111; border: none; }
+        body.gameboy .round-btn:active { transform: translateY(4px); box-shadow: none; }
+        body.gbc .round-btn { background: #333; color: #666; box-shadow: 0 4px 0 #1a1a1a; border: none; background-image: radial-gradient(circle at 30% 30%, #444, #222); }
+        body.gbc .round-btn:active { transform: translateY(4px); box-shadow: none; }
+        body.nes .round-btn { background: #b71c1c; border: 4px solid #fff; color: #fff; box-shadow: 4px 4px 0 #000; border-radius: 50%; }
+        body.nes .round-btn:active { transform: translate(4px, 4px); box-shadow: none; }
+        body.pixel .round-btn { background: #ff4d6d; border: 4px solid #fff; color: #fff; box-shadow: 4px 4px 0 rgba(0,0,0,0.5); border-radius: 50%; }
+        body.pixel .round-btn:active { transform: translate(4px, 4px); box-shadow: none; }
+        body.oled .round-btn { background: #000; border: 2px solid #fff; color: #fff; }
+        body.oled .round-btn:active { background: #fff; color: #000; }
+        body.liquid .round-btn { background: rgba(255,255,255,0.4); border: 2px solid #fff; color: #fff; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        body.liquid .round-btn:active { transform: scale(0.9); background: #fff; color: #ff6b6b; }
+
+        .hidden { display: none !important; }
+        .swapped { flex-direction: row-reverse; }
+        input[type=range] { width: 100%; margin: 10px 0; accent-color: var(--accent-primary); }
+        .checkbox-wrapper { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #555; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--accent-primary); }
+        input:checked + .slider:before { transform: translateX(26px); }
+
+    </style>
+</head>
+<body class="cyberpunk">
+
+    <!-- MENU PRINCIPAL -->
+    <div id="overlay">
+        <div class="menu-container">
+            <button class="settings-icon-btn" onclick="app.toggleSettings()">⚙️</button>
+
+            <h1>BLOCK MASTER<br><span style="font-size:0.5em">DX</span></h1>
+            
+            <div class="high-score-display">
+                MEILLEUR SCORE<br>
+                <span id="menu-highscore" style="font-size: 1.5rem; font-weight:bold;">0</span>
+            </div>
+
+            <div id="game-over-msg" class="hidden" style="margin-bottom:15px; color:var(--accent-secondary); font-weight:bold;">
+                FIN DE PARTIE - SCORE: <span id="final-score">0</span>
+            </div>
+
+            <select id="theme-select" onchange="app.changeTheme()">
+                <option value="cyberpunk">Cyberpunk</option>
+                <option value="gbc">Game Boy Color</option>
+                <option value="gameboy">Game Boy</option>
+                <option value="nes">NES</option>
+                <option value="pixel">Pixel Art</option>
+                <option value="liquid">Liquid Glass</option>
+                <option value="oled">OLED</option>
+            </select>
+
+            <select id="mode-select">
+                <option value="marathon">Marathon</option>
+                <option value="sprint">Sprint (40 Lignes)</option>
+                <option value="ultra">Ultra (3 Minutes)</option>
+            </select>
+            
+            <button class="btn-play" onclick="app.start()">JOUER</button>
+            <button onclick="app.toggleControls()" id="btn-swap">Cmd: Droite ⇄</button>
+        </div>
+    </div>
+
+    <!-- GAME OVER MENU -->
+    <div id="game-over-modal" class="hidden">
+        <div class="menu-container">
+            <h1 style="color:var(--accent-secondary)">FIN DE PARTIE</h1>
+            
+            <div class="high-score-display">
+                SCORE FINAL<br>
+                <span id="final-score" style="font-size: 2rem; font-weight:bold;">0</span>
+            </div>
+            
+            <div style="margin-bottom:20px; font-size:0.9rem; opacity:0.8">
+                MEILLEUR: <span id="go-highscore">0</span>
+            </div>
+
+            <button class="btn-play" onclick="app.start()">REJOUER</button>
+            <button onclick="app.showMenu()">MENU PRINCIPAL</button>
+        </div>
+    </div>
+
+    <!-- PARAMETRES -->
+    <div id="settings-modal" class="hidden">
+        <div class="menu-container" style="background:var(--bg-color); padding:20px; border:2px solid var(--accent-primary); border-radius: var(--radius);">
+            <h2 style="color:var(--text-color); margin-top:0;">PARAMÈTRES</h2>
+            
+            <div class="setting-group" style="text-align:left; margin-bottom:20px;">
+                <span class="setting-label">FLUIDITÉ (DÉTECTÉ: <span id="detected-hz">...</span> HZ)</span>
+                <select id="fps-select" onchange="app.setFPS(this.value)">
+                    <option value="60">60 HZ</option>
+                    <option value="90">90 HZ</option>
+                    <option value="120">120 HZ</option>
+                    <option value="144">144 HZ</option>
+                </select>
+            </div>
+
+            <div class="checkbox-wrapper">
+                <span>MODE ÉCONOMIE</span>
+                <label class="switch">
+                    <input type="checkbox" id="eco-check" onchange="app.toggleEco(this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="checkbox-wrapper">
+                <span>VIBRATIONS</span>
+                <label class="switch">
+                    <input type="checkbox" id="haptic-check" checked onchange="app.toggleHaptic(this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="setting-group" style="text-align:left;">
+                <span class="setting-label">MUSIQUE</span>
+                <input type="range" id="vol-music" min="0" max="100" value="50" oninput="audio.setMusicVol(this.value)">
+            </div>
+            
+            <div class="setting-group" style="text-align:left;">
+                <span class="setting-label">BRUITAGES</span>
+                <input type="range" id="vol-sfx" min="0" max="100" value="80" oninput="audio.setSfxVol(this.value)">
+            </div>
+
+            <button onclick="app.toggleSettings()">RETOUR</button>
+        </div>
+    </div>
+
+    <!-- JEU -->
+    <div id="game-wrapper">
+        <canvas id="tetris" width="200" height="400"></canvas>
+        
+        <div id="ui-panel">
+            <div class="hud-box">
+                <div class="hud-label">SUIVANT</div>
+                <canvas id="next-canvas" width="80" height="80"></canvas>
+            </div>
+            
+            <div class="hud-box">
+                <div class="hud-label">SCORE</div>
+                <div class="hud-value" id="score">0</div>
+            </div>
+
+            <div class="hud-box">
+                <div class="hud-label" id="lines-label">LIGNES</div>
+                <div class="hud-value" id="lines">0</div>
+            </div>
+            
+            <div class="hud-box">
+                <div class="hud-label">NIVEAU</div>
+                <div class="hud-value" id="level">1</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div id="mobile-controls">
+        <div class="d-pad">
+            <!-- Cross Shape Grid for GBC -->
+            <div class="ctrl-btn" style="visibility:visible; pointer-events:none;"></div> <!-- Top part of cross -->
+            <div class="ctrl-btn" style="visibility:hidden"></div>
+            <div class="ctrl-btn" style="visibility:hidden"></div>
+            
+            <div class="ctrl-btn" id="btn-left">
+                <!-- Rounded Arrow Left -->
+                <svg class="svg-arrow" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" fill="none" /></svg>
+            </div>
+            <div class="ctrl-btn" id="btn-down">
+                <!-- Rounded Arrow Down -->
+                <svg class="svg-arrow" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" fill="none" /></svg>
+            </div>
+            <div class="ctrl-btn" id="btn-right">
+                <!-- Rounded Arrow Right -->
+                <svg class="svg-arrow" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" /></svg>
+            </div>
+        </div>
+        <div style="display:flex; align-items:center;">
+            <div class="round-btn" id="btn-rotate">
+                <!-- Rounded Rotate -->
+                <svg class="svg-arrow" style="width:32px;height:32px" viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-9-9c2.52 0 4.93 1 6.74 2.74L21 8" fill="none" /><path d="M21 3v5h-5" fill="none" /></svg>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- AUDIO ENGINE PRO ---
+        const audio = {
+            ctx: null, musicVol: 0.25, sfxVol: 0.4,
+            init: function() { 
+                if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); 
+                if (this.ctx.state === 'suspended') this.ctx.resume(); 
+            },
+            
+            getWave: function() {
+                const t = document.body.className;
+                if(t.includes('gameboy') || t.includes('nes') || t.includes('gbc') || t.includes('pixel')) return 'square';
+                return 'sawtooth'; 
+            },
+
+            playOsc: function(freq, type, dur, vol=1, slide=0) {
+                if(!this.ctx) return;
+                const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+                o.type = type;
+                o.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                if(slide) o.frequency.exponentialRampToValueAtTime(freq + slide, this.ctx.currentTime + dur);
+                g.gain.setValueAtTime(this.sfxVol * vol, this.ctx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + dur);
+                o.connect(g); g.connect(this.ctx.destination);
+                o.start(); o.stop(this.ctx.currentTime + dur);
+            },
+
+            sfxMove: function() { this.playOsc(400, this.getWave(), 0.05, 0.3); },
+            sfxRotate: function() { this.playOsc(600, this.getWave(), 0.08, 0.3, 100); },
+            sfxDrop: function() { 
+                if(this.getWave() === 'square') this.playOsc(150, 'square', 0.1, 0.5, -50); 
+                else this.playOsc(100, 'sawtooth', 0.15, 0.5, -50);
+            }, 
+            sfxLine: function() { 
+                const w = this.getWave();
+                this.playOsc(880, w, 0.1, 0.4); 
+                setTimeout(()=>this.playOsc(1108, w, 0.1, 0.4), 60); 
+                setTimeout(()=>this.playOsc(1318, w, 0.2, 0.4), 120);
+            },
+            sfxGameOver: function() { 
+                this.playOsc(500, 'sawtooth', 0.3, 0.6);
+                setTimeout(()=>this.playOsc(450, 'sawtooth', 0.3, 0.6), 250);
+                setTimeout(()=>this.playOsc(300, 'sawtooth', 0.8, 0.6, -100), 500);
+            },
+            
+            // Music Sequencer
+            isPlaying: false, noteIndex: 0, nextNoteTime: 0, tempo: 160, currentTrack: 'menu',
+            menuMelody: [
+                {f:330,d:4},{f:294,d:4},{f:262,d:4},{f:196,d:8},{f:262,d:4},{f:294,d:4},{f:330,d:4},{f:392,d:8}
+            ],
+            // FULL Korobeiniki (Theme A)
+            gameMelody: [
+                // Part A
+                {f:659,d:4},{f:493,d:2},{f:523,d:2},{f:587,d:4},{f:523,d:2},{f:493,d:2},{f:440,d:4},{f:440,d:2},{f:523,d:2},{f:659,d:4},{f:587,d:2},{f:523,d:2},
+                {f:493,d:6},{f:523,d:2},{f:587,d:4},{f:659,d:4},{f:523,d:4},{f:440,d:4},{f:440,d:8},
+                {f:0,d:2},{f:587,d:4},{f:698,d:2},{f:880,d:4},{f:783,d:2},{f:698,d:2},{f:659,d:6},{f:523,d:2},{f:659,d:4},{f:587,d:2},{f:523,d:2},
+                {f:493,d:4},{f:493,d:2},{f:523,d:2},{f:587,d:4},{f:659,d:4},{f:523,d:4},{f:440,d:4},{f:440,d:8},
+                // Part B
+                {f:330,d:4},{f:330,d:4},{f:440,d:4},{f:493,d:4},{f:523,d:4},{f:493,d:4},{f:440,d:4},{f:330,d:4},
+                {f:330,d:4},{f:330,d:4},{f:440,d:4},{f:493,d:4},{f:523,d:4},{f:659,d:4},{f:440,d:8}
+            ],
+            
+            playTrack: function(track) {
+                this.currentTrack = track; this.noteIndex = 0;
+                if(this.ctx) this.nextNoteTime = this.ctx.currentTime;
+                if(!this.isPlaying) this.startMusic();
+            },
+            startMusic: function() { if(this.isPlaying||!this.ctx)return; this.isPlaying=true; this.nextNoteTime=this.ctx.currentTime; this.scheduler(); },
+            stopMusic: function() { this.isPlaying=false; if(this.tId) clearTimeout(this.tId); },
+            scheduler: function() { if(!this.isPlaying)return; while(this.nextNoteTime<this.ctx.currentTime+0.1){this.playNote();} this.tId=setTimeout(()=>this.scheduler(),25); },
+            playNote: function() {
+                const melody = this.currentTrack === 'menu' ? this.menuMelody : this.gameMelody;
+                const n = melody[this.noteIndex % melody.length];
+                if(n.f>0){
+                    const o=this.ctx.createOscillator(), g=this.ctx.createGain();
+                    o.type=this.getWave(); 
+                    if(document.body.className==='liquid') o.type = 'sine'; 
+                    o.frequency.value=n.f;
+                    g.gain.setValueAtTime(this.musicVol, this.nextNoteTime);
+                    // Staccato for dynamic feel
+                    g.gain.exponentialRampToValueAtTime(0.01, this.nextNoteTime+(n.d*0.08));
+                    o.connect(g); g.connect(this.ctx.destination);
+                    o.start(this.nextNoteTime); o.stop(this.nextNoteTime+(n.d*0.1));
+                }
+                const t = this.currentTrack === 'menu' ? 100 : this.tempo;
+                this.nextNoteTime+=0.25*n.d*(60.0/t)*2;
+                this.noteIndex++;
+            },
+            setMusicVol: function(v) { this.musicVol=v/200; }, setSfxVol: function(v) { this.sfxVol=v/100; }
+        };
+
+        // --- GAME ENGINE ---
+        const canvas = document.getElementById('tetris'), ctx = canvas.getContext('2d');
+        const nextCtx = document.getElementById('next-canvas').getContext('2d');
+        const SCALE = 20;
+        ctx.scale(SCALE, SCALE); nextCtx.scale(SCALE, SCALE);
+
+        const PALETTES = {
+            cyberpunk: [null,'#FF0055','#00FFFF','#00FF66','#AA00FF','#FF6600','#FFFF00','#0055FF'],
+            gameboy: [null,'#0f380f','#0f380f','#0f380f','#0f380f','#0f380f','#0f380f','#0f380f'],
+            gbc: [null,'#F00','#0FF','#0F0','#F0F','#F80','#FF0','#00F'],
+            nes: [null,'#F00','#0FF','#0F0','#F0F','#F80','#FF0','#00F'], 
+            pixel: [null, '#ff4d6d', '#3ee0d6', '#a9f857', '#f9c74f', '#f72585', '#4cc9f0', '#7209b7'],
+            oled: [null,'#FFF','#FFF','#FFF','#FFF','#FFF','#FFF','#FFF']
+        };
+
+        const app = {
+            arena: null, player: {pos:{x:0,y:0},matrix:null,score:0,lines:0,level:1},
+            nextPiece: null, gameOver: false, paused: true, isClearing: false,
+            mode: 'marathon', modeVal: 0, lastTime: 0, dropCount: 0, highScore: 0,
+            targetFPS: 60, frameInterval: 1000/60, animations: [], hapticEnabled: true, detectedHz: 60, rafId: null,
+
+            init: function() {
+                this.arena = this.createMatrix(10, 20);
+                this.highScore = parseInt(localStorage.getItem('tetris_highscore')) || 0;
+                document.getElementById('menu-highscore').innerText = this.highScore;
+                this.detectHardware();
+                this.changeTheme(); 
+                this.draw();
+                
+                // Gestionnaire d'interaction pour débloquer l'audio (iOS/Chrome policy)
+                const startAudio = () => {
+                    if(!audio.ctx) audio.init();
+                    if(audio.ctx && audio.ctx.state === 'suspended') audio.ctx.resume();
+                    
+                    // Lancer la musique du menu si on n'est pas déjà en jeu
+                    if(this.paused && !this.gameOver && !audio.isPlaying) {
+                        audio.playTrack('menu');
+                    }
+                    
+                    document.removeEventListener('click', startAudio);
+                    document.removeEventListener('touchstart', startAudio);
+                    document.removeEventListener('keydown', startAudio);
+                };
+                
+                document.addEventListener('click', startAudio);
+                document.addEventListener('touchstart', startAudio);
+                document.addEventListener('keydown', startAudio);
+            },
+
+            detectHardware: function() {
+                let frames = 0, start = performance.now();
+                const check = () => {
+                    frames++;
+                    if(performance.now() - start >= 1000) {
+                        const hz = Math.round(frames);
+                        let detected = 60;
+                        if(hz > 130) detected = 144;
+                        else if(hz > 100) detected = 120;
+                        else if(hz > 75) detected = 90;
+                        this.detectedHz = detected;
+                        document.getElementById('detected-hz').innerText = detected;
+                        this.updateFpsOptions(detected);
+                        this.setFPS(detected);
+                    } else {
+                        requestAnimationFrame(check);
+                    }
+                };
+                requestAnimationFrame(check);
+            },
+
+            updateFpsOptions: function(maxHz) {
+                const select = document.getElementById('fps-select');
+                for (let i = 0; i < select.options.length; i++) {
+                    const optVal = parseInt(select.options[i].value);
+                    if (optVal > maxHz) {
+                        select.options[i].disabled = true;
+                    } else {
+                        select.options[i].disabled = false;
+                        if(optVal === maxHz) select.selectedIndex = i;
+                    }
+                }
+            },
+
+            setFPS: function(hz) { this.targetFPS = parseInt(hz); this.frameInterval = 1000/this.targetFPS; },
+            toggleEco: function(on) { if(on){this.setFPS(30); document.body.classList.add('eco-mode');} else {this.setFPS(document.getElementById('fps-select').value); document.body.classList.remove('eco-mode');} },
+            toggleHaptic: function(on) { this.hapticEnabled = on; },
+
+            start: function() {
+                audio.init(); audio.playTrack('game');
+                this.arena.forEach(r => r.fill(0));
+                this.player = {pos:{x:0,y:0},matrix:null,score:0,lines:0,level:1};
+                this.gameOver = false; this.paused = false; this.isClearing = false; this.animations = [];
+                this.mode = document.getElementById('mode-select').value;
+                if(this.mode==='sprint') this.modeVal=40; else if(this.mode==='ultra') this.modeVal=180;
+                this.resetPlayer();
+                document.getElementById('overlay').classList.add('hidden');
+                document.getElementById('game-over-modal').classList.add('hidden');
+                this.updateUI(); 
+                if(this.rafId) cancelAnimationFrame(this.rafId); 
+                this.lastTime = performance.now();
+                this.loop(this.lastTime);
+            },
+            
+            showMenu: function() {
+                this.gameOver = true;
+                if(this.rafId) cancelAnimationFrame(this.rafId);
+                audio.playTrack('menu');
+                document.getElementById('game-over-modal').classList.add('hidden');
+                document.getElementById('overlay').classList.remove('hidden');
+                this.draw();
+            },
+
+            createMatrix: function(w, h) { const m=[]; while(h--) m.push(new Array(w).fill(0)); return m; },
+            createPiece: function(t) {
+                if(t==='I')return[[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]];
+                if(t==='L')return[[0,2,0],[0,2,0],[0,2,2]]; if(t==='J')return[[0,3,0],[0,3,0],[3,3,0]];
+                if(t==='O')return[[4,4],[4,4]]; if(t==='Z')return[[5,5,0],[0,5,5],[0,0,0]];
+                if(t==='S')return[[0,6,6],[6,6,0],[0,0,0]]; if(t==='T')return[[0,7,0],[7,7,7],[0,0,0]];
+            },
+
+            resetPlayer: function() {
+                if(!this.nextPiece) this.nextPiece = this.createPiece('ILJOTSZ'[Math.random()*7|0]);
+                this.player.matrix = this.nextPiece;
+                this.player.pos.y = 0;
+                this.player.pos.x = (this.arena[0].length/2|0)-(this.player.matrix[0].length/2|0);
+                this.nextPiece = this.createPiece('ILJOTSZ'[Math.random()*7|0]);
+                if(this.collide(this.arena, this.player)) this.endGame();
+                this.drawNext();
+            },
+
+            collide: function(a, p) {
+                const [m, o] = [p.matrix, p.pos];
+                for(let y=0; y<m.length; ++y) for(let x=0; x<m[y].length; ++x)
+                    if(m[y][x]!==0 && (a[y+o.y] && a[y+o.y][x+o.x])!==0) return true;
+                return false;
+            },
+
+            merge: function(a, p) {
+                p.matrix.forEach((row, y) => row.forEach((val, x) => { if(val!==0) a[y+p.pos.y][x+p.pos.x]=val; }));
+                audio.sfxDrop();
+                this.player.score += 5; 
+                this.updateUI();
+            },
+
+            rotate: function(dir) {
+                if (this.gameOver || this.paused) return; // Strict Lock
+                const pos = this.player.pos.x; let offset = 1;
+                this._rot(this.player.matrix, dir);
+                while(this.collide(this.arena, this.player)) {
+                    this.player.pos.x += offset; offset = -(offset+(offset>0?1:-1));
+                    if(offset > this.player.matrix[0].length) { this._rot(this.player.matrix, -dir); this.player.pos.x = pos; return; }
+                }
+                audio.sfxRotate();
+            },
+            _rot: function(m, d) { for(let y=0;y<m.length;++y)for(let x=0;x<y;++x)[m[x][y],m[y][x]]=[m[y][x],m[x][y]]; if(d>0)m.forEach(r=>r.reverse());else m.reverse(); },
+
+            drop: function(manual=false) {
+                if(this.isClearing || this.gameOver || this.paused) return; // Strict Lock
+                this.player.pos.y++;
+                if(this.collide(this.arena, this.player)) {
+                    this.player.pos.y--;
+                    this.merge(this.arena, this.player);
+                    this.checkLines();
+                } 
+                this.dropCount = 0;
+            },
+
+            move: function(dir) {
+                if(this.isClearing || this.gameOver || this.paused) return; // Strict Lock
+                this.player.pos.x += dir;
+                if(this.collide(this.arena, this.player)) this.player.pos.x -= dir;
+                else audio.sfxMove();
+            },
+
+            checkLines: function() {
+                let lines = [];
+                for(let y=this.arena.length-1; y>0; --y) {
+                    let full = true; for(let x=0; x<this.arena[y].length; ++x) if(this.arena[y][x]===0) full=false;
+                    if(full) lines.push(y);
+                }
+                if(lines.length>0) { this.isClearing=true; this.startAnim(lines); }
+                else this.resetPlayer();
+            },
+
+            startAnim: function(lines) {
+                audio.sfxLine();
+                this.animations.push({ lines: lines, timer: 0, max: 20 });
+            },
+
+            procAnim: function() {
+                if(!this.animations.length) return;
+                let fin = false;
+                this.animations.forEach(a => { a.timer++; if(a.timer>=a.max) fin=true; });
+                if(fin) {
+                    this.sweep(); this.animations=[]; this.isClearing=false; this.resetPlayer();
+                }
+            },
+
+            sweep: function() {
+                let count = 0;
+                outer: for(let y=this.arena.length-1; y>0; --y) {
+                    for(let x=0; x<this.arena[y].length; ++x) if(this.arena[y][x]===0) continue outer;
+                    const row = this.arena.splice(y, 1)[0].fill(0);
+                    this.arena.unshift(row); ++y; count++;
+                }
+                if(count>0) {
+                    const pts = [0, 100, 300, 500, 800];
+                    this.player.score += pts[count] * this.player.level;
+                    this.player.lines += count;
+                    if(this.mode==='sprint') { this.modeVal -= count; if(this.modeVal<=0) this.endGame(); }
+                    else this.player.level = Math.floor(this.player.lines/10)+1;
+                    this.updateUI();
+                }
+            },
+
+            loop: function(time) {
+                if(this.paused || this.gameOver) {
+                    if(this.rafId) cancelAnimationFrame(this.rafId);
+                    return; // STOP LOOP
+                }
+                this.rafId = requestAnimationFrame(t => this.loop(t));
+
+                const dt = time - this.lastTime;
+                if (dt < this.frameInterval) return;
+                this.lastTime = time - (dt % this.frameInterval);
+                this.dropCount += dt;
+
+                let speed = Math.max(100, 1000-(this.player.level*50));
+                if(this.mode==='ultra') { this.modeVal -= dt/1000; if(this.modeVal<=0) this.endGame(); this.updateUI(); }
+
+                if(this.isClearing) this.procAnim();
+                else if(this.dropCount > speed) this.drop();
+                
+                this.draw();
+            },
+
+            endGame: function() {
+                this.gameOver = true;
+                if(this.rafId) cancelAnimationFrame(this.rafId); 
+                audio.stopMusic(); audio.sfxGameOver();
+                if(this.player.score > this.highScore) {
+                    this.highScore = this.player.score; localStorage.setItem('tetris_highscore', this.highScore);
+                    document.getElementById('menu-highscore').innerText = this.highScore;
+                }
+                document.getElementById('final-score').innerText = this.player.score;
+                document.getElementById('go-highscore').innerText = this.highScore;
+                document.getElementById('game-over-modal').classList.remove('hidden');
+            },
+
+            updateUI: function() {
+                document.getElementById('score').innerText = this.player.score;
+                if(this.mode==='sprint') { document.getElementById('lines-label').innerText='RESTANT'; document.getElementById('lines').innerText=Math.max(0,Math.ceil(this.modeVal)); }
+                else { document.getElementById('lines-label').innerText='LIGNES'; document.getElementById('lines').innerText=this.player.lines; }
+                if(this.mode==='ultra') document.getElementById('level').innerText=Math.ceil(this.modeVal)+'s';
+                else document.getElementById('level').innerText=this.player.level;
+            },
+
+            changeTheme: function() { document.body.className = document.getElementById('theme-select').value; this.draw(); if(this.nextPiece) this.drawNext(); },
+            
+            draw: function() {
+                const theme = document.body.className;
+                ctx.fillStyle = theme==='gameboy'?'#9bbc0f':(theme==='gbc'?'#fff':(theme==='oled'?'#000':'rgba(0,0,0,0.8)'));
+                if(theme==='nes') ctx.fillStyle='#000';
+                if(theme==='pixel') ctx.fillStyle='rgba(0,0,0,0.5)';
+                if(theme==='liquid') ctx.fillStyle='rgba(255,255,255,0.1)';
+                ctx.fillRect(0,0,200/SCALE,400/SCALE); 
+                
+                if(theme==='gbc') {
+                    // DX Checkerboard
+                    ctx.fillStyle='rgba(0,0,0,0.06)';
+                    for(let y=0; y<20; y++) {
+                        for(let x=0; x<10; x++) {
+                            if((x+y)%2 === 0) ctx.fillRect(x,y,1,1);
+                        }
+                    }
+                }
+
+                this.drawMatrix(this.arena, {x:0,y:0}, ctx);
+
+                if(this.isClearing && this.animations.length) {
+                    const anim = this.animations[0];
+                    anim.lines.forEach(y => {
+                        if(theme==='cyberpunk') {
+                            ctx.fillStyle = `rgba(0,243,255,${1-anim.timer/anim.max})`; ctx.fillRect(0,y,10,1);
+                        } else if(theme==='gameboy'||theme==='gbc') {
+                            ctx.fillStyle = (anim.timer%6<3)?'#0f380f':'#9bbc0f'; ctx.fillRect(0,y,10,1);
+                        } else {
+                            ctx.fillStyle = (anim.timer%4<2)?'#fff':'#000'; ctx.fillRect(0,y,10,1);
+                        }
+                    });
+                } else if(!this.paused && !this.gameOver) {
+                    if(theme!=='gameboy' && theme!=='nes') { 
+                        let g={...this.player.pos}; while(!this.collide(this.arena,{pos:g,matrix:this.player.matrix}))g.y++; g.y--;
+                        if(g.y!==this.player.pos.y) this.drawMatrix(this.player.matrix, g, ctx, true);
+                    }
+                    this.drawMatrix(this.player.matrix, this.player.pos, ctx);
+                }
+            },
+
+            drawNext: function() {
+                const theme = document.body.className;
+                nextCtx.fillStyle = theme==='gameboy'?'#9bbc0f':'rgba(0,0,0,0)';
+                nextCtx.clearRect(0,0,4,4);
+                if(theme==='gameboy') nextCtx.fillRect(0,0,4,4);
+                if(this.nextPiece) {
+                    const ox=(4-this.nextPiece[0].length)/2, oy=(4-this.nextPiece.length)/2;
+                    this.drawMatrix(this.nextPiece, {x:ox,y:oy}, nextCtx);
+                }
+            },
+
+            drawMatrix: function(m, o, c, ghost=false) {
+                const theme = document.body.className;
+                const pal = PALETTES[theme] || PALETTES.cyberpunk;
+                m.forEach((row, y) => row.forEach((val, x) => {
+                    if(val!==0) {
+                        const X=x+o.x, Y=y+o.y, col=pal[val];
+                        if(theme==='gameboy') {
+                            c.fillStyle=ghost?'transparent':col;
+                            if(!ghost){c.fillRect(X,Y,1,1); c.fillStyle='#9bbc0f'; c.fillRect(X+0.1,Y+0.1,0.8,0.8); c.fillStyle=col; c.fillRect(X+0.3,Y+0.3,0.4,0.4);}
+                        } 
+                        else if(theme==='gbc') {
+                            c.fillStyle=ghost?'rgba(0,0,0,0.1)':col; c.fillRect(X,Y,1,1);
+                            if(!ghost){
+                                // Tetris DX Style: "Candy" blocks
+                                c.fillStyle='rgba(255,255,255,0.9)'; c.fillRect(X,Y,0.2,0.2); // White dot corner
+                                c.fillStyle='rgba(0,0,0,0.3)'; c.fillRect(X+0.7,Y+0.7,0.3,0.3); // Inner Shadow
+                                c.strokeStyle='#000'; c.lineWidth=0.05; c.strokeRect(X,Y,1,1); // Black Border
+                            }
+                        } 
+                        else if(theme==='nes') {
+                            c.fillStyle=ghost?'transparent':col;
+                            if(!ghost){
+                                // NES Style: White border + solid fill
+                                c.fillStyle='white'; c.fillRect(X,Y,1,1);
+                                c.fillStyle=col; c.fillRect(X+0.1, Y+0.1, 0.8, 0.8);
+                            } else {
+                                c.strokeStyle='#fff'; c.lineWidth=0.05; c.strokeRect(X,Y,1,1);
+                            }
+                        }
+                        else if(theme==='pixel') {
+                            c.fillStyle=ghost?'rgba(255,255,255,0.2)':col; 
+                            if(!ghost){
+                                c.fillRect(X,Y,1,1);
+                                c.fillStyle='rgba(255,255,255,0.5)'; c.fillRect(X+0.1,Y+0.1,0.2,0.2); 
+                                c.fillStyle='rgba(0,0,0,0.2)'; c.fillRect(X+0.8,Y+0.8,0.1,0.1);
+                                c.strokeStyle='#000'; c.lineWidth=0.05; c.strokeRect(X,Y,1,1);
+                            } else {
+                                c.fillRect(X,Y,1,1);
+                            }
+                        }
+                        else if(theme==='liquid') {
+                            c.fillStyle=ghost?'rgba(255,255,255,0.2)':col;
+                            if(!ghost) {
+                                c.beginPath(); c.roundRect(X+0.05, Y+0.05, 0.9, 0.9, 0.3); c.fill();
+                                c.fillStyle='rgba(255,255,255,0.6)'; c.beginPath(); c.arc(X+0.3, Y+0.3, 0.15, 0, Math.PI*2); c.fill();
+                            } else {
+                                c.beginPath(); c.roundRect(X+0.05, Y+0.05, 0.9, 0.9, 0.3); c.fillStyle='rgba(255,255,255,0.1)'; c.fill(); c.strokeStyle='rgba(255,255,255,0.3)'; c.lineWidth=0.05; c.stroke();
+                            }
+                        }
+                        else if(theme==='oled') {
+                            if(ghost){c.strokeStyle='#fff'; c.lineWidth=0.05; c.strokeRect(X,Y,1,1);}
+                            else{c.fillStyle='#fff'; c.fillRect(X,Y,1,1); c.strokeStyle='#000'; c.lineWidth=0.05; c.strokeRect(X,Y,1,1);}
+                        } 
+                        else { // Cyberpunk
+                            if(ghost){c.strokeStyle=col; c.lineWidth=0.05; c.strokeRect(X,Y,1,1);}
+                            else{c.fillStyle=col; c.shadowBlur=10; c.shadowColor=col; c.fillRect(X,Y,1,1); c.shadowBlur=0; c.fillStyle='rgba(255,255,255,0.4)'; c.fillRect(X,Y,1,0.1); c.fillRect(X,Y,0.1,1);}
+                        }
+                    }
+                }));
+            },
+
+            toggleSettings: function() { const m=document.getElementById('settings-modal'); m.classList.toggle('hidden'); audio.init(); },
+            toggleControls: function() {
+                const el=document.getElementById('mobile-controls'), btn=document.getElementById('btn-swap');
+                el.classList.toggle('swapped'); btn.innerHTML=el.classList.contains('swapped')?'Cmd: Gauche ⇄':'Cmd: Droite ⇄';
+            }
+        };
+
+        // --- EVENTS ---
+        document.addEventListener('keydown', e => {
+            if(app.paused || app.gameOver) return; // Strict block
+            if(e.keyCode===37) app.move(-1); else if(e.keyCode===39) app.move(1);
+            else if(e.keyCode===40) app.drop(true); else if(e.keyCode===38||e.keyCode===81) app.rotate(1);
+        });
+
+        function bindBtn(id, action, repeat=100) {
+            const el = document.getElementById(id); let t;
+            const s = (e) => { e.preventDefault(); if(app.paused || app.gameOver) return; el.classList.add('active'); action(); if(repeat) t=setInterval(action, repeat); };
+            const n = (e) => { e.preventDefault(); el.classList.remove('active'); if(t) clearInterval(t); };
+            el.addEventListener('touchstart', s, {passive:false}); el.addEventListener('mousedown', s);
+            ['touchend','touchcancel','mouseup','mouseleave'].forEach(ev=>el.addEventListener(ev, n));
+        }
+        bindBtn('btn-left', ()=>app.move(-1)); bindBtn('btn-right', ()=>app.move(1));
+        bindBtn('btn-down', ()=>app.drop(true), 50); bindBtn('btn-rotate', ()=>app.rotate(1), 0);
+
+        app.init();
+    </script>
+</body>
+</html>

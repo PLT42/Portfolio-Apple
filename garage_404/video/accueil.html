@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Garage 404 - Vidéo de Présentation</title>
+    <link rel="icon" href="../../image/logo_header_fixed.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../../accueil/accueil.css">
+    <link rel="stylesheet" href="../../accueil/accueil.css">
+
+    <link rel="stylesheet" href="../../accueil/accueil.css">
+</head>
+<body>
+    <!-- HEADER / NAVBAR -->
+    <nav class="navbar-epure">
+    <div class="navbar-container">
+        <a href="../../accueil/accueil.html" class="nav-brand">
+            PL. Testu
+        </a>
+        
+        <div class="burger" id="burger-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <ul class="menu-epure" id="nav-menu">
+            <li class="dropdown">
+                <a href="#">Opus Formation</a>
+                <ul class="dropdown-content">
+                    <li><a href="../../opus_formation/fiche_produit/ficheproduit.html">Fiche Produit</a></li>
+                    <li><a href="../../opus_formation/dossier_professionnel/dp.html">Dossier Professionnel</a></li>
+                    <li><a href="../../opus_formation/diaporama_mcdo_roanne/diapomcdo.html">Diaporama McDo</a></li>
+                    <li><a href="../../opus_formation/diaporama_magasin_normal_roanne/diaponormal.html">Diaporama Normal</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Phénix Info</a>
+                <ul class="dropdown-content">
+                    <li><a href="../../phenix_info/maquette_figma/maquette.html">Maquette Figma</a></li>
+                    <li><a href="https://saunaclubdesterreaux.fr" target="_blank" rel="noopener noreferrer">Sauna Club des Terreaux</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Garage 404</a>
+                <ul class="dropdown-content">
+                    <li><a href="../../garage_404/realisation/travauxe.html">Créations Garage 404</a></li>
+                    <li><a href="../../garage_404/video/accueil.html">Vidéo</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Mon parcours</a>
+                <ul class="dropdown-content">
+                    <li><a href="../../cv/cv.html">Mon CV</a></li>
+                    <li><a href="../../formations/formations.html">Mes formations</a></li>
+                    <li><a href="../../contrats/contrats.html">Mes contrats</a></li>
+                    <li><a href="../../rqth/rqth.html">Divers</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="#">Mes projets</a>
+                <ul class="dropdown-content">
+                    <li><a href="../../jeu/blockmasterDX/jeu.html" target="_blank" rel="noopener noreferrer">Block Master DX</a></li>
+                    <li><a href="../../archives/index.html">Archives & Versions</a></li>
+                </ul>
+            </li>
+            <li><a href="../../contact/contact.html">Contact</a></li>
+            <li><a href="../../avis/avis.html">Avis</a></li>
+        </ul>
+        
+        <div class="nav-right">
+            <!-- Theme Toggle -->
+            <button id="theme-toggle-btn" class="theme-toggle-btn" aria-label="Changer de thème">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+
+    <!-- INJECTED CONTENT -->
+    
+    <header class="header" style="text-align: center; margin-top: 140px;">
+        <h1>Garage 404 - Vidéo</h1>
+        <p>Présentation vidéo du projet Garage 404</p>
+    </header>
+    <section class="main-content" style="display: flex; justify-content: center; padding: 40px;">
+        <div class="video-container" style="max-width: 1000px; width: 100%; box-shadow: 0 0 20px rgba(0,0,0,0.5); border-radius: 12px; overflow: hidden;">
+            <video controls autoplay muted loop style="width: 100%; display: block;">
+                <source src="video_garage.mp4" type="video/mp4">
+                Votre navigateur ne supporte pas la vidéo.
+            </video>
+        </div>
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="footer-epure">
+    <div class="footer-container">
+        <p>&copy; 2026 Pierre-Louis Testu — Portfolio</p>
+        <div class="footer-links">
+            <a href="../../legacy/cgu.html">Politique de Confidentialité</a>
+            <a href="../../avis/index.html">Donner un avis</a>
+            <a href="../../portfolio_v1/portfoliov1.html" class="legacy-link">Ancienne version (v1.5)</a>
+        </div>
+    </div>
+</footer>
+
+    <!-- MOBILE DOCK -->
+    <!-- Fichier intentionnellement vidé car le dock mobile a été supprimé pour le design épuré -->
+
+    <!-- SCRIPTS -->
+    
+    <script src="../../script.js?v=2.5" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const galleryImages = document.querySelectorAll('.gallery img');
+            const lightbox = document.getElementById('lightbox');
+            if(galleryImages.length > 0 && lightbox){
+                 // Basic Lightbox Logic
+            }
+        });
+    </script>
+    
+</body>
+</html>

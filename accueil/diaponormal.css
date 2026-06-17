@@ -1,0 +1,212 @@
+/* --- Reset & Base --- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: "Montserrat", sans-serif;
+    background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
+    color: #00ffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Navbar --- */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(11, 11, 11, 0.95);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    z-index: 1000;
+    box-shadow: 0 0 10px #00ffff55;
+}
+.menu {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+.menu li { position: relative; }
+.menu a {
+    color: #00ffff;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+.menu a:hover {
+    color: #0b0b0b;
+    background: #00ffff;
+    text-shadow: 0 0 5px #00ffff;
+}
+
+/* Dropdown desktop */
+.dropdown-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: rgba(11,11,11,0.95);
+    min-width: 200px;
+    display: none;
+    flex-direction: column;
+    border: 1px solid #00ffff55;
+    border-radius: 6px;
+    padding: 0;
+    z-index: 1000;
+}
+.menu li:hover > .dropdown-content { display: flex; }
+.dropdown-content li { list-style: none; }
+.dropdown-content a {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    color: #00ffff;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+.dropdown-content a:hover {
+    background: #00ffff;
+    color: #0b0b0b;
+}
+
+/* Burger menu */
+.burger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 35px;
+    height: 30px;
+    cursor: pointer;
+}
+.burger div {
+    height: 4px;
+    background: #00ffff;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+/* --- Header réduit --- */
+.header {
+    margin-top: 100px;
+    text-align: center;
+    padding: 20px 30px;
+    border-radius: 12px;
+}
+.header h1 {
+    font-size: 2.2rem;
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff77;
+}
+.header p {
+    margin-top: 8px;
+    text-shadow: 0 0 5px #00ffff55;
+}
+
+/* --- Galerie Produit --- */
+.gallery-section { margin: 40px 0; text-align: center; }
+.gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px; justify-items: center; align-items: center; padding: 0 20px; }
+.gallery img { width: 100%; max-width: 400px; height: auto; border-radius: 12px; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; }
+.gallery img:hover { transform: scale(1.05); box-shadow: 0 0 25px #00ffff; }
+
+/* --- Lightbox Produit --- */
+.lightbox { position: fixed; display: none; justify-content: center; align-items: center; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; }
+.lightbox-img { max-width: 90%; max-height: 90%; border-radius: 12px; }
+.close { position: absolute; top: 30px; right: 40px; font-size: 3rem; color: #00ffff; cursor: pointer; transition: color 0.3s; }
+.close:hover { color: #0b0b0b; }
+
+/* --- Pop-up adulte --- */
+.popup-mini { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8); width: 320px; background-color: rgba(11,11,11,0.95); border: 2px solid #00ffff; border-radius: 12px; padding: 20px; z-index: 9999; opacity: 0; transition: all 0.3s ease; flex-direction: column; align-items: center; }
+.popup-mini.show { display: flex; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+.popup-mini p { color: #00ffff; text-align: center; margin-bottom: 15px; }
+.popup-buttons { display: flex; gap: 15px; }
+.popup-buttons button { padding: 8px 20px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+#oui { background-color: #00ff00; color: #000; }
+#oui:hover { background-color: #00cc00; }
+#non { background-color: #ff0000; color: #fff; }
+#non:hover { background-color: #cc0000; }
+
+/* --- Vidéo Section --- */
+.video-container {
+    position: relative;
+    width: 80%;
+    max-width: 1100px;
+    margin: 100px auto 80px auto; /* ← ici j’ai augmenté l’espace bas */
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 20px #00ffff44;
+}
+.video-container video {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+/* --- Footer futuriste --- */
+.footer {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    background: linear-gradient(135deg, #111111, #222222);
+    color: #00ffff;
+    padding: 25px 50px;
+    font-weight: 600;
+    border-top: 2px solid #00ffff;
+    box-shadow: 0 -0 30px #00ffff55, 0 0 15px #00ffff88 inset;
+}
+.footer-left p, .footer-right {
+    margin: 5px 0;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 10px #00ffff88;
+}
+.footer-left p:hover, .footer-right:hover {
+    text-shadow: 0 0 20px #00ffffaa, 0 0 30px #00ffffcc;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .burger { display: flex; }
+    .menu {
+        flex-direction: column;
+        gap: 0;
+        background: rgba(11,11,11,0.95);
+        position: fixed;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease;
+        z-index: 1000;
+    }
+    .menu.show { max-height: 2000px; }
+    .menu li { width: 100%; }
+    .menu li a { padding: 12px 20px; display: block; }
+
+    /* Dropdown mobile */
+    .menu li.dropdown > .dropdown-content {
+        position: relative;
+        display: none;
+        flex-direction: column;
+        padding-left: 20px;
+        border: none;
+        background: none;
+    }
+    .menu li.dropdown.show-dropdown > .dropdown-content {
+        display: flex;
+    }
+
+    .video-container {
+        width: 95%;
+        margin: 80px auto 20px auto;
+    }
+
+    .gallery img { max-width: 90%; }
+
+    .footer { flex-direction: column; align-items: center; text-align: center; gap: 15px; }
+}

@@ -1,0 +1,195 @@
+/* === FICHIER travaux.css (STYLES SPÉCIFIQUES - Version Apple Retail Dark) === */
+
+/* --- Header Spécifique --- */
+.header {
+    margin-top: 20px;
+    text-align: center;
+    padding: 20px 30px;
+}
+
+.header h1 {
+    font-size: 2.2rem;
+    color: #f5f5f7;
+    /* CHANGÉ: De Cyan à Blanc Cassé Apple */
+    text-shadow: none;
+    /* Suppression de la lueur */
+    transition: color 0.4s, text-shadow 0.4s;
+}
+
+.header p {
+    margin-top: 8px;
+    color: #8e8e93;
+    /* CHANGÉ: De Cyan transparent à Gris Moyen Apple */
+    text-shadow: none;
+    /* Suppression de la lueur */
+    transition: color 0.4s, text-shadow 0.4s;
+}
+
+/* Header Light Mode */
+.light-mode .header h1 {
+    color: #007aff;
+    /* Changé 0096FF vers 007aff pour cohérence Apple */
+    text-shadow: none;
+}
+
+.light-mode .header p {
+    color: #4a4a4a;
+    text-shadow: none;
+}
+
+/* --- Galerie Produit --- */
+.gallery-section {
+    margin: 40px 0;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 35px;
+    justify-items: center;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.gallery img {
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    /* CHANGÉ: De Cyan transparent à Bordure Neutre */
+}
+
+.gallery img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    /* CHANGÉ: Suppression des lueurs Cyan */
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Galerie Light Mode */
+.light-mode .gallery img {
+    border: 2px solid rgba(0, 0, 0, 0.05);
+}
+
+.light-mode .gallery img:hover {
+    box-shadow: 0 8px 25px rgba(0, 122, 255, 0.2);
+    border-color: #007aff88;
+}
+
+/* --- Lightbox (Neutre - Conservé) --- */
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: none;
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+.lightbox-content {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 12px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: #8e8e93;
+    text-decoration: none;
+}
+
+/* --- Section vidéo (Standardisée) --- */
+.video-section {
+    margin: 60px 0;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.video-section h2 {
+    font-size: 1.8rem;
+    color: #f5f5f7;
+    /* CHANGÉ: De Cyan à Blanc Cassé Apple */
+    margin-bottom: 30px;
+    text-shadow: none;
+    /* Suppression de la lueur */
+    transition: color 0.4s, text-shadow 0.4s;
+}
+
+.video-container {
+    position: relative;
+    max-width: 1100px;
+    margin: 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.video-container video {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    /* CHANGÉ: De Cyan transparent à Bordure Neutre */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    /* CHANGÉ: Suppression de la lueur Cyan */
+    transition: border-color 0.4s, box-shadow 0.4s;
+}
+
+/* Vidéo Light Mode */
+.light-mode .video-section h2 {
+    color: #007aff;
+    /* Changé 0096FF vers 007aff pour cohérence Apple */
+    text-shadow: none;
+}
+
+.light-mode .video-container video {
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 25px rgba(0, 122, 255, 0.2);
+}
+
+/* --- Responsive (Conservé) --- */
+@media (max-width: 768px) {
+    .header {
+        margin-top: 110px;
+        padding: 20px;
+    }
+
+    .header h1 {
+        font-size: 1.8rem;
+    }
+
+    .gallery {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .gallery img {
+        max-width: 100%;
+        border-radius: 8px;
+    }
+
+    .video-section h2 {
+        font-size: 1.5rem;
+    }
+}

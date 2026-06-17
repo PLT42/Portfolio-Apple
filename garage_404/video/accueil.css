@@ -1,0 +1,137 @@
+/* --- Navbar globale --- */
+.navbar {
+  background: linear-gradient(90deg, #8e2de2, #4a00e0);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+/* --- Menu principal --- */
+.menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 50px;
+}
+
+.menu li {
+  position: relative; /* pour que le dropdown se positionne par rapport au li */
+}
+
+.menu a {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  text-decoration: none;
+  color: #fff;
+  font-size: 16px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: inline-block;
+  white-space: nowrap; /* empêche le texte de se casser */
+}
+
+.menu a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 0 10px #8e2de2;
+}
+
+/* --- Dropdown --- */
+.dropdown-content {
+  position: absolute;
+  top: 100%;          /* juste sous le lien */
+  left: 50%;          /* centre horizontalement par rapport au li */
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #4a00e0, #8e2de2);
+  border-radius: 12px;
+  min-width: max-content; 
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  z-index: 10;
+
+  opacity: 0;          /* invisible par défaut */
+  visibility: hidden;
+  pointer-events: none; /* empêche de cliquer quand invisible */
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.menu li:hover .dropdown-content {
+  opacity: 1;          /* rendu visible au survol */
+  visibility: visible;
+  pointer-events: auto; /* maintenant cliquable */
+}
+
+/* --- Items du dropdown et texte centré --- */
+.dropdown-content,
+.dropdown-content ul,
+.dropdown-content li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dropdown-content li {
+  display: block;
+}
+
+.dropdown-content a {
+  display: block;
+  width: 100%;
+  padding: 12px 20px;
+  color: #fff;
+  text-align: center;      /* texte parfaitement centré */
+  text-decoration: none;
+  box-sizing: border-box;  /* padding inclus dans la largeur */
+  transition: background 0.3s;
+}
+
+.dropdown-content a:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* --- Animation fadeIn --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) translateX(-50%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateX(-50%);
+  }
+}
+
+/* --- Background et titres --- */
+body {
+  background-image: url(/image/accueil.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+h1 {
+  margin-top: 5%;
+  text-align: center;
+  font-size: 60px;
+  font-family: "Montserrat", sans-serif, Franklin Gothic Medium, 'Arial Narrow', Arial, sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
+
+p {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+  text-align: center;
+  font-size: 30px;
+}

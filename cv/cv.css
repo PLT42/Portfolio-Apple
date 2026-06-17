@@ -1,0 +1,308 @@
+/* === FICHIER cv.css (VERSION PREMIUM RETOUCHÉE V10 - MARGES COMPÉTENCES FORCÉES) === */
+
+/* --- Header (Titre de Page) --- */
+.header {
+    margin-top: 80px; text-align: center;
+    padding: 20px 30px; margin-bottom: 30px; 
+}
+.header h1 {
+    font-size: 2.3rem; 
+    color: #f5f5f7; 
+    text-shadow: none; 
+    transition: color 0.4s ease;
+}
+.header p {
+    margin-top: 10px; 
+    color: #8e8e93; 
+    text-shadow: none; 
+    font-size: 1.15rem; 
+    font-weight: 400; transition: color 0.4s ease;
+}
+/* Header Light Mode */
+.light-mode .header h1 { color: #1d1d1f; }
+.light-mode .header p { color: #515154; }
+
+
+/* --- Conteneur principal (La boîte du CV) --- */
+.cv-container {
+    padding-top: 0; 
+    padding-bottom: 80px;
+}
+
+/* Boîte de contenu du CV (Style Glass Amélioré) */
+.cv-content-box {
+    max-width: 850px; 
+    margin: 0 auto; 
+    padding: 50px; 
+    border-radius: 20px; 
+    
+    /* Style Glass Propre et Sobre */
+    background: rgba(30, 30, 32, 0.85); 
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5); 
+    transition: all 0.4s ease;
+}
+.light-mode .cv-content-box {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+}
+
+
+/* --- Header Interne du CV (Nom, Coordonnées, Bouton) --- */
+.cv-header { 
+    text-align: center; 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15); 
+    padding-bottom: 30px; 
+    margin-bottom: 40px; 
+}
+.cv-header h1 { 
+    font-size: 3em; 
+    font-weight: 700; 
+    margin: 0 0 5px 0; 
+    color: #f5f5f7; 
+    letter-spacing: -1px; 
+}
+
+/* --- INFOS DE CONTACTS (AVEC ICÔNES - Gris par défaut, Bleu au survol) --- */
+.contact-info { 
+    margin-top: 15px; 
+    font-size: 1.05em; 
+    color: #8e8e93; 
+    margin-bottom: 25px; 
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+.contact-info .contact-item { 
+    display: inline-flex; /* Aligne icône/texte */
+    align-items: center;  /* Centre verticalement */
+    color: #8e8e93; /* Gris par défaut */
+    transition: color 0.3s ease;
+}
+.contact-info .contact-item i,
+.contact-info .contact-item svg { /* Style icônes */
+    margin-right: 8px;
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+}
+.contact-info .contact-item:hover {
+    color: #007aff; /* Bleu au survol */
+}
+.contact-info a {
+    color: inherit; 
+    text-decoration: none; 
+    transition: color 0.3s ease;
+    /* Assurer l'alignement si l'icône est dans le lien */
+    display: inline-flex; 
+    align-items: center;
+}
+.contact-info a:hover { 
+    opacity: 0.9;
+}
+.light-mode .cv-header h1 { color: #1d1d1f; }
+.light-mode .contact-info .contact-item { color: #6e6e73; }
+.light-mode .contact-info .contact-item:hover { color: #007aff; }
+/* --- FIN INFOS DE CONTACTS --- */
+
+
+/* --- Bouton de Téléchargement (Placement et Style iOS 26/Ghost) --- */
+.download-cv { 
+    text-align: center; 
+    margin-top: 15px; 
+    margin-bottom: 0; 
+    padding-right: 0; 
+}
+
+/* Style iOS 26 / Ghost (Bouton d'action secondaire/tonal) */
+.btn-download-cv {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 25px; 
+    font-size: 1.05rem; 
+    font-weight: 500; 
+    text-decoration: none;
+    border-radius: 12px; 
+    transition: all 0.2s ease-out;
+    position: relative;
+    
+    /* Style Ghost (Dark Mode - Transparence/Tonal) */
+    color: #f5f5f7;
+    background-color: rgba(255, 255, 255, 0.1); 
+    backdrop-filter: blur(8px); 
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3); 
+}
+
+.btn-download-cv:hover {
+    transform: translateY(-1px);
+    background-color: rgba(255, 255, 255, 0.15); 
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+.btn-download-cv:active {
+    transform: translateY(1px); 
+    background-color: rgba(255, 255, 255, 0.05); 
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Style Ghost (Light Mode) */
+.light-mode .btn-download-cv {
+    color: #1d1d1f;
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: none; 
+}
+
+.light-mode .btn-download-cv:hover {
+    transform: translateY(-1px);
+    background-color: rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.light-mode .btn-download-cv:active {
+    transform: translateY(1px);
+    background-color: rgba(0, 0, 0, 0.03);
+    box-shadow: none;
+}
+
+/* Style pour l'icône dans le bouton */
+.btn-download-cv i,
+.btn-download-cv svg {
+    margin-right: 10px; 
+    font-size: 1.1em; 
+}
+
+
+/* --- Styles de Section --- */
+section { margin-bottom: 45px; } 
+h2 { 
+    font-size: 1.6em; 
+    color: #007aff; 
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1); 
+    padding-bottom: 10px; 
+    margin-bottom: 30px; 
+    font-weight: 600; 
+}
+.light-mode h2 { 
+    color: #007aff; 
+    border-bottom-color: rgba(0, 0, 0, 0.1); 
+}
+
+/* --- Listes et Contenu de Base --- */
+ul { list-style: none; padding-left: 0; }
+li { margin-bottom: 18px; color: #EAEAEA; line-height: 1.6; } 
+li strong { font-weight: 600; color: #f5f5f7; }
+.light-mode li, .light-mode ul, .light-mode li strong { color: #1d1d1f; }
+
+
+/* --- Expérience Professionnelle (Cartes d'expérience) --- */
+.job-entry { 
+    margin-bottom: 35px; 
+    padding: 20px;
+    border-radius: 12px;
+    background-color: rgba(45, 45, 47, 0.3); 
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); 
+    transition: all 0.3s ease;
+}
+.job-entry:hover {
+    background-color: rgba(45, 45, 47, 0.5);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+.job-title { font-size: 1.3em; font-weight: 600; color: #f5f5f7; margin-bottom: 5px; }
+.job-company { font-size: 1.1em; color: #007aff; font-weight: 400; margin-bottom: 5px; }
+.job-date { font-size: 0.95em; color: #8e8e93; margin-bottom: 15px; }
+.job-description { padding-left: 20px; list-style-type: disc; } 
+
+.light-mode .job-entry {
+    background-color: rgba(240, 240, 245, 0.8);
+    border-color: rgba(0, 0, 0, 0.05);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+.light-mode .job-entry:hover {
+    background-color: rgba(230, 230, 235, 0.9);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+.light-mode .job-title { color: #1d1d1f; }
+
+
+/* --- Compétences (Pilules d'Accentuation - ESPACEMENT DÉCOLLÉ FORCÉ) --- */
+.skills-list { display: flex; flex-wrap: wrap; 
+    margin-top: 25px; 
+    margin-bottom: 10px; /* Réduit pour compenser la marge des pilules */
+    /* Pas de 'gap' ici, on gère avec margin sur .skill */
+} 
+.skill {
+    display: inline-block; 
+    padding: 10px 20px; 
+    border-radius: 25px; 
+    background-color: #007aff; 
+    color: #fff;
+    font-size: 0.95em;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.4); 
+    transition: all 0.3s ease;
+    
+    /* Ajout de marges autour de CHAQUE pilule */
+    margin: 0 15px 15px 0; /* Haut/Droite/Bas/Gauche (15px pour la ligne suivante) */
+}
+.skill:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 122, 255, 0.5);
+    background-color: #0091ff;
+}
+/* Light Mode Compétences */
+.light-mode .skill { 
+    background-color: #007aff; 
+    color: #fff; 
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.2);
+}
+/* --- FIN Compétences --- */
+
+
+/* --- Responsive Spécifique CV --- */
+@media (max-width: 768px) {
+    .header { text-align: left; }
+    .cv-content-box {
+        margin: 0 15px; 
+        padding: 30px 20px; 
+        width: auto; border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+    .light-mode .cv-content-box {
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+    .cv-header { margin-bottom: 30px; }
+    .cv-header h1 { font-size: 2.2em; }
+    .contact-info { flex-direction: column; gap: 5px; margin-bottom: 20px; }
+    
+    /* Placement du Bouton (Responsive) */
+    .download-cv {
+        text-align: center; 
+        margin-top: 20px; 
+        margin-bottom: 30px;
+        padding-right: 0;
+    }
+    
+    .job-description { padding-left: 15px; } 
+    .job-entry { margin-bottom: 25px; }
+    
+    .skill { padding: 6px 12px; font-size: 0.85em; }
+    /* Marges sur chaque pilule pour mobile */
+    .skill {
+        margin: 0 10px 10px 0; /* Haut/Droite/Bas/Gauche */
+    }
+    .skills-list { 
+        margin-top: 20px; 
+        margin-bottom: 10px;
+    }
+}

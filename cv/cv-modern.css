@@ -1,0 +1,301 @@
+/* Modern CV Design - 2026 Refactor */
+:root {
+    --cv-bg: #1a1a1a;
+    --cv-sidebar: #2c3e50;
+    /* Dark Blue from PDF */
+    --cv-text: #ecf0f1;
+    --cv-accent: #3498db;
+    --cv-section-title: #2c3e50;
+    --cv-card-bg: #ffffff;
+    --cv-card-text: #333;
+    --cv-timeline-line: #bdc3c7;
+
+    /* Dark Mode Auto Support via Media Query or Class */
+    --sidebar-width: 300px;
+}
+
+/* Base Layout */
+body {
+    background-color: #f5f6fa;
+    /* Light grey background for content area */
+    color: #2c3e50;
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Main Grid Container */
+.cv-container {
+    display: grid;
+    grid-template-columns: var(--sidebar-width) 1fr;
+    min-height: 100vh;
+    max-width: 1400px;
+    margin: 0 auto;
+    background: white;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+}
+
+/* --- SIDEBAR (LEFT COLUMN) --- */
+.cv-sidebar {
+    background: var(--cv-sidebar);
+    color: white;
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+}
+
+.profile-photo-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profile-photo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-section h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    color: #3498db;
+}
+
+.contact-info-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.contact-info-item i {
+    width: 20px;
+    color: #3498db;
+}
+
+.skill-bar-container {
+    margin-bottom: 15px;
+}
+
+.skill-name {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.skill-bar-bg {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.skill-bar-fill {
+    height: 100%;
+    background: #3498db;
+    border-radius: 3px;
+}
+
+.qrcode-container {
+    text-align: center;
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.qrcode-img {
+    width: 100px;
+    height: 100px;
+    background: white;
+    padding: 5px;
+    border-radius: 8px;
+}
+
+/* --- MAIN CONTENT (RIGHT COLUMN) --- */
+.cv-main-content {
+    padding: 60px 50px;
+}
+
+.cv-header-title h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0;
+    color: #2c3e50;
+    line-height: 1.1;
+}
+
+.cv-header-title h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #7f8c8d;
+    margin: 10px 0 30px;
+}
+
+.cv-intro {
+    background: #f8f9fa;
+    padding: 20px;
+    border-left: 4px solid #3498db;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 40px;
+    font-style: italic;
+    color: #555;
+    line-height: 1.6;
+}
+
+.main-section {
+    margin-bottom: 50px;
+}
+
+.main-section h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.8rem;
+    color: #2c3e50;
+    border-bottom: 3px solid #3498db;
+    display: inline-block;
+    padding-bottom: 5px;
+    margin-bottom: 30px;
+}
+
+/* Timeline Style for Experiences */
+.experience-item {
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 40px;
+    border-left: 2px solid #e0e0e0;
+}
+
+.experience-item::before {
+    content: '';
+    position: absolute;
+    left: -9px;
+    top: 0;
+    width: 16px;
+    height: 16px;
+    background: #3498db;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 0 0 2px #3498db;
+}
+
+.exp-date {
+    font-weight: 700;
+    color: #3498db;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.exp-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0 0 5px;
+    color: #2c3e50;
+}
+
+.exp-company {
+    font-size: 1.1rem;
+    color: #7f8c8d;
+    margin-bottom: 10px;
+}
+
+.exp-details {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.exp-details li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.exp-details li::before {
+    content: '▹';
+    position: absolute;
+    left: 0;
+    color: #3498db;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .cv-container {
+        grid-template-columns: 1fr;
+    }
+
+    .cv-sidebar {
+        height: auto;
+        position: relative;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px;
+    }
+
+    .cv-sidebar>* {
+        flex: 1 1 300px;
+    }
+
+    .cv-main-content {
+        padding: 40px 20px;
+    }
+}
+
+/* Dark Mode Overrides (if body has dark-mode class) */
+body.dark-mode {
+    background: #121212;
+    color: #ecf0f1;
+}
+
+/* Specific overrides for Dark Mode */
+body:not(.light-mode) .cv-container {
+    background: #1e1e1e;
+    box-shadow: none;
+}
+
+body:not(.light-mode) .cv-sidebar {
+    background: #151b21;
+    /* Darker sidebar */
+}
+
+body:not(.light-mode) .cv-header-title h1,
+body:not(.light-mode) .cv-header-title h2,
+body:not(.light-mode) .main-section h3,
+body:not(.light-mode) .exp-title {
+    color: #ecf0f1;
+}
+
+body:not(.light-mode) .cv-intro {
+    background: #252525;
+    color: #bdc3c7;
+    border-left-color: #3498db;
+}
+
+body:not(.light-mode) .experience-item {
+    border-left-color: #444;
+}
+
+body:not(.light-mode) .exp-company {
+    color: #95a5a6;
+}

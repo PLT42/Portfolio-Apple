@@ -1,0 +1,211 @@
+/* === COOKIE CONSENT MANAGER STYLES === */
+
+/* BASE CONTAINER */
+#cookie-banner-container {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    z-index: 10000;
+    pointer-events: none;
+    /* Allow clicks through empty space */
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+/* BANNER CARD */
+.cookie-banner {
+    pointer-events: auto;
+    background: var(--card-bg, #fff);
+    color: var(--text-color, #333);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    width: 100%;
+    animation: cookieSlideUp 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+@keyframes cookieSlideUp {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.cookie-content {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.cookie-icon {
+    font-size: 2.5rem;
+    animation: cookieBounce 2s infinite;
+}
+
+@keyframes cookieBounce {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-5px) rotate(5deg);
+    }
+}
+
+.cookie-text h3 {
+    margin: 0 0 5px;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.cookie-text p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    opacity: 0.8;
+}
+
+.cookie-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.cookie-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+
+.cookie-btn.accept {
+    background: var(--accent-color, #2c3e50);
+    color: white;
+}
+
+.cookie-btn.decline {
+    background: transparent;
+    border: 1px solid currentColor;
+    opacity: 0.6;
+}
+
+.cookie-btn:hover {
+    transform: translateY(-2px);
+    opacity: 1;
+}
+
+/* === THEME: FUTURISTIC (Default/Dark) === */
+.cookie-banner.theme-futuristic {
+    background: rgba(20, 20, 30, 0.8);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+    color: #fff;
+    border-radius: 20px;
+}
+
+.cookie-banner.theme-futuristic .cookie-icon {
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.cookie-banner.theme-futuristic .cookie-btn.accept {
+    background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+    box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+}
+
+/* === THEME: RETRO (Pixel Art) === */
+.cookie-banner.theme-retro {
+    background: #000;
+    border: 4px solid #4af626;
+    /* Green terminal */
+    border-radius: 0;
+    font-family: 'Press Start 2P', monospace;
+    /* Fallback if not loaded */
+    image-rendering: pixelated;
+    box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.5);
+}
+
+.cookie-banner.theme-retro .cookie-text h3,
+.cookie-banner.theme-retro .cookie-btn {
+    font-family: inherit;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    line-height: 1.5;
+}
+
+.cookie-banner.theme-retro .cookie-btn.accept {
+    background: #4af626;
+    color: #000;
+    border: 2px solid #4af626;
+}
+
+.cookie-banner.theme-retro .cookie-btn.accept:hover {
+    background: #fff;
+    border-color: #fff;
+    box-shadow: 0 0 10px #fff;
+}
+
+.cookie-banner.theme-retro .cookie-btn.decline {
+    color: #ff3333;
+    border: 2px solid #ff3333;
+}
+
+/* === THEME: ELEGANCE (Light) === */
+.cookie-banner.theme-elegance,
+.cookie-banner.light-mode {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    color: #333;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+}
+
+.cookie-banner.theme-elegance .cookie-btn.accept {
+    background: #000;
+    color: #fff;
+    border-radius: 50px;
+}
+
+/* === THEME: ELEGANCE DARK (OLED) === */
+.cookie-banner.theme-elegance-dark {
+    background: #000;
+    border: 1px solid #333;
+    color: #fff;
+}
+
+.cookie-banner.theme-elegance-dark .cookie-btn.accept {
+    background: #fff;
+    color: #000;
+    border-radius: 50px;
+}
+
+/* === THEME: CORPORATE === */
+.cookie-banner.theme-corporate {
+    background: #fff;
+    border-left: 5px solid #2c3e50;
+    border-radius: 4px;
+}
+
+.cookie-banner.theme-corporate .cookie-btn {
+    border-radius: 4px;
+}
+
+.cookie-banner.theme-corporate .cookie-btn.accept {
+    background: #2c3e50;
+}

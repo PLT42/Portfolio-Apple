@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pierre-Louis Testu - macOS</title>
+    <link rel="icon" href="image/logo_final_v4.png">
+    <!-- Mobile Detection: Redirect to iOS version -->
+    <script>
+        (function() {
+            var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+                || (window.innerWidth <= 768 && 'ontouchstart' in window);
+            if (isMobile && window.location.pathname.indexOf('ios.html') === -1) {
+                window.location.replace('ios.html');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Lock Screen -->
+    <div id="lock-screen" class="lock-screen">
+        <div class="lock-header">
+            <div class="lock-time" id="lock-time">--:--</div>
+            <div class="lock-date" id="lock-date">-- -- --</div>
+        </div>
+        <div class="lock-users">
+            <div class="lock-user" onclick="selectUser('plt')">
+                <img src="image/portrait.jpeg" alt="Pierre-Louis Testu" onerror="this.src='image/logo_final_v4.png'">
+                <span>Pierre-Louis Testu</span>
+            </div>
+            <div class="lock-user" onclick="selectUser('recruiter')">
+                <div class="recruiter-avatar"><i class="fas fa-user-tie"></i></div>
+                <span>Recruteur</span>
+            </div>
+        </div>
+        <div id="password-container" class="password-container" style="display:none;">
+            <input type="password" id="lock-password" placeholder="Mot de passe" onkeypress="handleLogin(event)">
+            <button onclick="checkPassword()"><i class="fas fa-arrow-right"></i></button>
+        </div>
+        <div id="lock-error" class="lock-error">Mot de passe incorrect</div>
+        <button id="cancel-login" class="cancel-login" style="display:none;" onclick="cancelLogin()">Annuler</button>
+        <div class="lock-footer">
+            <i class="fas fa-power-off"></i>
+            <i class="fas fa-wifi"></i>
+        </div>
+    </div>
+
+    <!-- iOS Status Bar (Visible on Mobile only) -->
+    <div class="ios-status-bar">
+        <div class="ios-time" id="ios-time">--:--</div>
+        <div class="ios-icons">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+
+    <!-- Top Menu Bar (macOS) -->
+    <nav class="mac-menubar">
+        <div class="menubar-left">
+            <span class="apple-icon"><i class="fab fa-apple"></i></span>
+            <span class="active-app-name" id="menu-app-name">Finder</span>
+            <span class="menubar-item hide-mobile">Fichier</span>
+            <span class="menubar-item hide-mobile">Édition</span>
+            <span class="menubar-item hide-mobile">Présentation</span>
+            <span class="menubar-item hide-mobile">Aller</span>
+            <span class="menubar-item hide-mobile">Fenêtre</span>
+            <span class="menubar-item hide-mobile">Aide</span>
+        </div>
+        <div class="menubar-right">
+            <span class="menubar-icon"><i class="fas fa-battery-full"></i></span>
+            <span class="menubar-icon"><i class="fas fa-wifi"></i></span>
+            <span class="menubar-icon"><i class="fas fa-search"></i></span>
+            <span class="menubar-icon"><i class="fas fa-sliders-h"></i></span>
+            <span class="menubar-time" id="clock">09:41</span>
+        </div>
+    </nav>
+
+    <!-- Desktop Area (Windows container) -->
+    <main class="mac-desktop" id="desktop">
+        <!-- Windows will be injected here by JS -->
+    </main>
+
+    <!-- Bottom Dock -->
+    <div class="mac-dock-container">
+        <div class="mac-dock" id="dock">
+            <!-- Finder -->
+            <div class="dock-item" data-app="finder" onclick="openApp('finder')">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c9/Finder_Icon_macOS_Big_Sur.png" alt="Finder">
+                <span class="dock-tooltip">Finder</span>
+                <div class="dock-dot active"></div>
+            </div>
+            <!-- À propos -->
+            <div class="dock-item" data-app="about" onclick="openApp('about')">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Contacts_Icon_macOS_Big_Sur.png" alt="À propos">
+                <span class="dock-tooltip">À propos de moi</span>
+                <div class="dock-dot active"></div>
+            </div>
+            <!-- Safari (CV / Web) -->
+            <div class="dock-item" data-app="safari" onclick="openApp('safari')">
+                <i class="fab fa-safari" style="font-size: 2.5rem; color: #007aff;"></i>
+                <span class="dock-tooltip">Safari (Mon Parcours)</span>
+                <div class="dock-dot"></div>
+            </div>
+            <!-- Block Master DX -->
+            <div class="dock-item" onclick="window.open('jeu/blockmasterDX/jeu.html', '_blank')">
+                <i class="fas fa-gamepad" style="font-size: 2.5rem; color: #ff3b30;"></i>
+                <span class="dock-tooltip">Block Master DX</span>
+            </div>
+            <!-- Mail (Contact) -->
+            <div class="dock-item" data-app="mail" onclick="openApp('mail')">
+                <i class="fas fa-envelope" style="font-size: 2.5rem; color: #34c759;"></i>
+                <span class="dock-tooltip">Mail (Contact)</span>
+                <div class="dock-dot"></div>
+            </div>
+            <!-- App Store (Avis) -->
+            <div class="dock-item" data-app="avis" onclick="openApp('avis')">
+                <i class="fab fa-app-store-ios" style="font-size: 2.5rem; color: #007aff;"></i>
+                <span class="dock-tooltip">Avis</span>
+                <div class="dock-dot"></div>
+            </div>
+            <!-- Settings -->
+            <div class="dock-item" data-app="settings" onclick="openApp('settings')">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/f/f6/Settings_Icon_macOS_Big_Sur.png" alt="Settings">
+                <span class="dock-tooltip">Réglages Système</span>
+                <div class="dock-dot"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Templates for Window Contents (Hidden) -->
+    <div id="templates" style="display: none;">
+        
+        <!-- Finder App Template -->
+        <div id="app-content-finder">
+            <div class="finder-sidebar">
+                <h3>Favoris</h3>
+                <ul>
+                    <li class="active"><i class="fas fa-star" style="color:var(--apple-blue)"></i> Récents</li>
+                    <li><i class="fas fa-desktop" style="color:var(--apple-blue)"></i> Bureau</li>
+                    <li><i class="fas fa-folder-open" style="color:var(--apple-blue)"></i> Projets</li>
+                </ul>
+                <h3>Tags</h3>
+                <ul>
+                    <li><span class="tag-color" style="background: red;"></span> Important</li>
+                    <li><span class="tag-color" style="background: orange;"></span> En cours</li>
+                </ul>
+            </div>
+            <div class="finder-main">
+                <div class="folder-grid">
+                    <div class="folder-item" onclick="openApp('opus')">
+                        <i class="fas fa-folder" style="color: #4ebaf8; font-size: 3.5rem;"></i>
+                        <span>Opus Formation</span>
+                    </div>
+                    <div class="folder-item" onclick="openApp('garage')">
+                        <i class="fas fa-folder" style="color: #4ebaf8; font-size: 3.5rem;"></i>
+                        <span>Garage 404</span>
+                    </div>
+                    <div class="folder-item" onclick="openApp('phenix')">
+                        <i class="fas fa-folder" style="color: #4ebaf8; font-size: 3.5rem;"></i>
+                        <span>Phénix Info</span>
+                    </div>
+                    <div class="folder-item" onclick="window.open('jeu/blockmasterDX/jeu.html', '_blank')">
+                        <i class="fas fa-gamepad" style="color: #ff3b30; font-size: 3.5rem;"></i>
+                        <span>Block Master DX</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- iOS Home Grid (Visible on Mobile only) -->
+            <div class="ios-home-grid">
+                <div class="ios-app" onclick="openApp('about')">
+                    <div style="width:60px; height:60px; background:#34c759; border-radius:14px; display:flex; align-items:center; justify-content:center; margin-bottom:5px; box-shadow:0 4px 10px rgba(0,0,0,0.2);">
+                        <i class="fas fa-user" style="font-size:2rem; color:white;"></i>
+                    </div>
+                    <span>À propos</span>
+                </div>
+                <div class="ios-app" onclick="openApp('safari')">
+                    <div style="width:60px; height:60px; background:#fff; border-radius:14px; display:flex; align-items:center; justify-content:center; margin-bottom:5px; box-shadow:0 4px 10px rgba(0,0,0,0.2);">
+                        <i class="fab fa-safari" style="font-size:2.5rem; color:#007aff;"></i>
+                    </div>
+                    <span>Safari</span>
+                </div>
+                <div class="ios-app" onclick="openApp('opus')">
+                    <div style="width:60px; height:60px; background:#ff9500; border-radius:14px; display:flex; align-items:center; justify-content:center; margin-bottom:5px; box-shadow:0 4px 10px rgba(0,0,0,0.2);">
+                        <i class="fas fa-hamburger" style="font-size:2rem; color:white;"></i>
+                    </div>
+                    <span>Opus</span>
+                </div>
+                <div class="ios-app" onclick="openApp('garage')">
+                    <div style="width:60px; height:60px; background:#5856d6; border-radius:14px; display:flex; align-items:center; justify-content:center; margin-bottom:5px; box-shadow:0 4px 10px rgba(0,0,0,0.2);">
+                        <i class="fas fa-car" style="font-size:2rem; color:white;"></i>
+                    </div>
+                    <span>Garage 404</span>
+                </div>
+                <div class="ios-app" onclick="openApp('phenix')">
+                    <div style="width:60px; height:60px; background:#ff2d55; border-radius:14px; display:flex; align-items:center; justify-content:center; margin-bottom:5px; box-shadow:0 4px 10px rgba(0,0,0,0.2);">
+                        <i class="fas fa-laptop-code" style="font-size:2rem; color:white;"></i>
+                    </div>
+                    <span>Phénix Info</span>
+                </div>
+                <div class="ios-app" onclick="window.open('jeu/blockmasterDX/jeu.html', '_blank')">
+                    <div style="width:60px; height:60px; background:#ff3b30; border-radius:14px; display:flex; align-items:center; justify-content:center; margin-bottom:5px; box-shadow:0 4px 10px rgba(0,0,0,0.2);">
+                        <i class="fas fa-gamepad" style="font-size:2rem; color:white;"></i>
+                    </div>
+                    <span>Block Master</span>
+                </div>
+                <div class="ios-app" onclick="openApp('avis')">
+                    <div style="width:60px; height:60px; background:#007aff; border-radius:14px; display:flex; align-items:center; justify-content:center; margin-bottom:5px; box-shadow:0 4px 10px rgba(0,0,0,0.2);">
+                        <i class="fab fa-app-store-ios" style="font-size:2.5rem; color:white;"></i>
+                    </div>
+                    <span>Avis</span>
+                </div>
+                <div class="ios-app" onclick="openApp('mail')">
+                    <div style="width:60px; height:60px; background:#4ebaf8; border-radius:14px; display:flex; align-items:center; justify-content:center; margin-bottom:5px; box-shadow:0 4px 10px rgba(0,0,0,0.2);">
+                        <i class="fas fa-envelope" style="font-size:2rem; color:white;"></i>
+                    </div>
+                    <span>Mail</span>
+                </div>
+                <div class="ios-app" onclick="openApp('settings')">
+                    <div style="width:60px; height:60px; background:#8e8e93; border-radius:14px; display:flex; align-items:center; justify-content:center; margin-bottom:5px; box-shadow:0 4px 10px rgba(0,0,0,0.2);">
+                        <i class="fas fa-cog" style="font-size:2rem; color:white;"></i>
+                    </div>
+                    <span>Réglages</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- About App Template -->
+        <div id="app-content-about">
+            <div class="project-content" style="display:flex; flex-direction:column; align-items:center; text-align:center;">
+                <img src="image/portrait.jpeg" alt="Pierre-Louis Testu" style="width:150px; height:150px; border-radius:50%; object-fit:cover; border:4px solid var(--apple-blue); margin-bottom:20px;" onerror="this.src='accueil/image1.png'" loading="lazy">
+                <h1 style="margin-bottom:10px;">À propos de moi</h1>
+                <p style="max-width:600px; line-height:1.6; margin-bottom:20px; font-size:1.1rem;">
+                    Bonjour, je m'appelle <strong>Pierre-Louis Testu</strong>.<br><br>
+                    Passionné par les nouvelles technologies et l'univers de l'informatique, je consacre ce portfolio à mes réalisations et projets. Vous y découvrirez des projets issus de mes formations, ainsi que des réalisations concrètes lors de mes stages, notamment chez Phénix Info.<br><br>
+                    Mes centres d'intérêt sont les jeux vidéo, le cinéma et la technologie. J'ai une grande curiosité pour le numérique et j'adore apprendre de nouvelles choses dans ce domaine.
+                </p>
+                <div style="display:flex; gap:15px; max-width:800px; justify-content:center; flex-wrap:wrap; margin-top:20px;">
+                    <img src="accueil/image1.png" style="width:200px; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.2);" loading="lazy">
+                    <img src="accueil/image2.png" style="width:200px; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.2);" loading="lazy">
+                    <img src="accueil/image3.png" style="width:200px; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.2);" loading="lazy">
+                </div>
+            </div>
+        </div>
+
+        <!-- Safari App Template - CV COMPLET -->
+        <div id="app-content-safari">
+            <div class="safari-header">
+                <div class="safari-nav">
+                    <i class="fas fa-chevron-left disabled"></i>
+                    <i class="fas fa-chevron-right disabled"></i>
+                </div>
+                <div class="safari-address-bar">
+                    <i class="fas fa-lock" style="font-size:0.7rem; color:#888;"></i>
+                    <span>pierrelouis-testu.fr/cv</span>
+                </div>
+            </div>
+            <div class="safari-content">
+                <div class="cv-container">
+                    <h1 style="font-weight:700; font-size:2rem; margin-bottom:2rem;">Pierre-Louis Testu</h1>
+                    <p style="color:var(--text-muted); margin-bottom:2rem; line-height:1.6;">Passionné par les nouvelles technologies et l'univers de l'informatique, je porte un intérêt particulier à l'écosystème Apple. Doté d'une grande curiosité pour le numérique, j'adore apprendre et maîtriser de nouveaux outils.</p>
+
+                    <!-- COMPETENCES -->
+                    <div class="cv-section">
+                        <h2><i class="fas fa-star" style="color:var(--apple-blue)"></i> Compétences</h2>
+                        <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;">
+                            <span class="cv-skill">Service Client</span>
+                            <span class="cv-skill">Figma</span>
+                            <span class="cv-skill">Adobe Photoshop</span>
+                            <span class="cv-skill">Adobe InDesign</span>
+                            <span class="cv-skill">WordPress / Elementor</span>
+                            <span class="cv-skill">HTML / CSS / JS</span>
+                            <span class="cv-skill">WebDesign</span>
+                            <span class="cv-skill">Montage Vidéo</span>
+                            <span class="cv-skill">Gestion des Stocks</span>
+                        </div>
+                    </div>
+
+                    <!-- EXPERIENCES -->
+                    <div class="cv-section">
+                        <h2><i class="fas fa-briefcase" style="color:var(--apple-blue)"></i> Expériences Professionnelles</h2>
+                        <div class="cv-item">
+                            <h3>Employé Polyvalent</h3>
+                            <p class="cv-date">McDonald's France, ROSTORE, Roanne &mdash; 08/2023 - 06/2026</p>
+                            <ul class="cv-list"><li>Encaissement</li><li>Service client</li><li>Nettoyage de la salle</li><li>Réception de livraison</li></ul>
+                        </div>
+                        <div class="cv-item">
+                            <h3>Employé Commercial</h3>
+                            <p class="cv-date">Leclerc Champvert, Lyon 9ème &mdash; 04/2023 - 06/2023</p>
+                            <ul class="cv-list"><li>Mise en rayon</li><li>Facing</li><li>Réception de livraison</li></ul>
+                        </div>
+                        <div class="cv-item">
+                            <h3>Stagiaire (Design / Web)</h3>
+                            <p class="cv-date">Phénix Info, Villefranche-sur-Saône &mdash; 11/2022 - 01/2023</p>
+                            <ul class="cv-list"><li>WordPress avec Elementor</li><li>Figma</li><li>Adobe InDesign &amp; Photoshop</li></ul>
+                        </div>
+                        <div class="cv-item">
+                            <h3>Stagiaire (Développement Web)</h3>
+                            <p class="cv-date">Garage 404, Roanne &mdash; 01/2022</p>
+                            <ul class="cv-list"><li>WebDesign</li><li>Montage vidéo</li></ul>
+                        </div>
+                        <div class="cv-item">
+                            <h3>Stagiaire (Conseil Multimédia)</h3>
+                            <p class="cv-date">Happy Cash, Perreux &mdash; 07/2021 - 09/2021</p>
+                            <ul class="cv-list"><li>Conseil client (informatique, téléphonie, multimédia)</li><li>Mise en rayon</li></ul>
+                        </div>
+                        <div class="cv-item">
+                            <h3>Stagiaire</h3>
+                            <p class="cv-date">Cocci Market, Le Coteau &mdash; 06/2020 - 08/2020</p>
+                            <ul class="cv-list"><li>Facing</li><li>Mise en rayon</li><li>Encaissement</li></ul>
+                        </div>
+                    </div>
+
+                    <!-- FORMATIONS -->
+                    <div class="cv-section">
+                        <h2><i class="fas fa-graduation-cap" style="color:var(--apple-blue)"></i> Formations &amp; Diplômes</h2>
+                        <div class="cv-item">
+                            <h3>CAP Employé Commercial</h3>
+                            <p class="cv-date">Opus Formation, Villeurbanne &mdash; 08/2024 - 10/2025</p>
+                        </div>
+                        <div class="cv-item">
+                            <h3>Formation Développeur Web et Web Mobile</h3>
+                            <p class="cv-date">HumanBooster, Villeurbanne &mdash; 03/2022 - 01/2023</p>
+                        </div>
+                        <div class="cv-item">
+                            <h3>Formation Découverte Multimédia</h3>
+                            <p class="cv-date">CCI Formation, Saint-Etienne &mdash; 09/2021 - 01/2022</p>
+                        </div>
+                        <div class="cv-item">
+                            <h3>CAP Agent Polyvalent de Restauration Collective</h3>
+                            <p class="cv-date">MFR le Roseille, Vougy &mdash; 10/2016 - 07/2018</p>
+                        </div>
+                    </div>
+
+                    <!-- CONTRATS -->
+                    <div class="cv-section">
+                        <h2><i class="fas fa-file-contract" style="color:var(--apple-blue)"></i> Contrats de Travail</h2>
+                        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:12px; margin-top:12px;">
+                            <a href="mes_experiences/Contrat/contratapprentissageapr.pdf" target="_blank" class="cv-contract-card">📄 Apprentissage APR<br><small>Oct. 2016 - Juil. 2018</small></a>
+                            <a href="mes_experiences/Contrat/contratquick.pdf" target="_blank" class="cv-contract-card">📄 Quick<br><small>Sept. - Oct. 2018</small></a>
+                            <a href="mes_experiences/Contrat/sodexo1.pdf" target="_blank" class="cv-contract-card">📄 Sodexo #1<br><small>Mars 2019</small></a>
+                            <a href="mes_experiences/Contrat/sodexo2.pdf" target="_blank" class="cv-contract-card">📄 Sodexo #2<br><small>Avr. - Mai 2019</small></a>
+                            <a href="mes_experiences/Contrat/stagehappycash2021.pdf" target="_blank" class="cv-contract-card">📄 Stage Happy Cash<br><small>2021</small></a>
+                            <a href="mes_experiences/Contrat/contratleclerc.pdf" target="_blank" class="cv-contract-card">📄 Leclerc<br><small>2023</small></a>
+                            <a href="mes_experiences/Contrat/contratmcdo2.pdf" target="_blank" class="cv-contract-card">📄 McDonald's 2023-2024<br><small>Août 2023</small></a>
+                            <a href="mes_experiences/Contrat/contratmcdo3.pdf" target="_blank" class="cv-contract-card">📄 McDonald's Alternance<br><small>2024-2025</small></a>
+                            <a href="mes_experiences/Contrat/contratmcdo6.pdf" target="_blank" class="cv-contract-card">📄 McDonald's Actuel<br><small>Depuis Nov. 2025</small></a>
+                        </div>
+                    </div>
+
+                    <!-- TÉLÉCHARGEMENT CV -->
+                    <div class="cv-section">
+                        <h2><i class="fas fa-download" style="color:var(--apple-blue)"></i> Télécharger mes CV</h2>
+                        <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:12px;">
+                            <a href="cv/CV_Pierre-Louis_Testu2.pdf" download style="display:inline-flex; align-items:center; gap:8px; padding:10px 18px; background:var(--apple-blue); color:#fff; border-radius:8px; text-decoration:none; font-weight:600;"><i class="fas fa-file-pdf"></i> CV 2023</a>
+                            <a href="portfolio_v1/Pierre_Louis_Testu_CV.pdf" download style="display:inline-flex; align-items:center; gap:8px; padding:10px 18px; background:#27ae60; color:#fff; border-radius:8px; text-decoration:none; font-weight:600;"><i class="fas fa-file-pdf"></i> CV 2022</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mail App Template -->
+        <div id="app-content-mail">
+            <div class="mail-container">
+                <div class="mail-sidebar">
+                    <ul>
+                        <li class="active"><i class="fas fa-inbox"></i> Boîte de réception</li>
+                        <li><i class="fas fa-paper-plane"></i> Envoyés</li>
+                        <li><i class="fas fa-pencil-alt"></i> Brouillons</li>
+                    </ul>
+                </div>
+                <div class="mail-compose">
+                    <div class="mail-header">
+                        <div class="mail-field">
+                            <label>À :</label>
+                            <input type="text" value="pierrtestu@icloud.com" readonly style="color: var(--apple-blue); background:transparent; border:none; outline:none; width:100%; font-family:inherit;">
+                        </div>
+                        <div class="mail-field">
+                            <label>Sujet :</label>
+                            <input type="text" placeholder="Prise de contact..." id="contact-subject" style="background:transparent; border:none; outline:none; width:100%; font-family:inherit; color:var(--text-color);">
+                        </div>
+                    </div>
+                    <textarea class="mail-body" id="contact-message" placeholder="Écrivez votre message ici..." style="width:100%; height:100%; border:none; outline:none; resize:none; font-family:inherit; color:var(--text-color); padding:20px; background:transparent;"></textarea>
+                    <div class="mail-footer">
+                        <button class="btn-send" onclick="window.location.href='mailto:pierrtestu@icloud.com'" style="padding:8px 16px; background:var(--apple-blue); color:#fff; border:none; border-radius:6px; cursor:pointer;"><i class="fas fa-paper-plane"></i> Envoyer via Client Mail</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings App Template -->
+        <div id="app-content-settings">
+            <div class="settings-sidebar">
+                <div class="user-profile">
+                    <img src="image/logo_final_v4.png" alt="Profile" style="width:50px; border-radius:50%; background:#fff;">
+                    <div class="user-info">
+                        <strong>PL. Testu</strong>
+                        <span style="font-size:0.8rem; color:var(--text-muted);">Identifiant Apple</span>
+                    </div>
+                </div>
+                <ul>
+                    <li class="active"><i class="fas fa-desktop" style="background:var(--apple-blue); color:#fff; padding:4px; border-radius:4px;"></i> Apparence</li>
+                    <li onclick="logout()"><i class="fas fa-sign-out-alt" style="background:#ff3b30; color:#fff; padding:4px; border-radius:4px;"></i> Déconnexion</li>
+                </ul>
+            </div>
+            <div class="settings-main">
+                <h2>Apparence</h2>
+                <div class="appearance-options">
+                    <div class="appearance-card" onclick="setTheme('light')">
+                        <div class="appearance-preview light" style="background:#f5f5f7; width:100px; height:70px; border-radius:8px; border:2px solid var(--border-color);"></div>
+                        <span style="margin-top:8px; display:block; text-align:center;">Clair</span>
+                    </div>
+                    <div class="appearance-card" onclick="setTheme('dark')">
+                        <div class="appearance-preview dark" style="background:#1e1e1e; width:100px; height:70px; border-radius:8px; border:2px solid var(--border-color);"></div>
+                        <span style="margin-top:8px; display:block; text-align:center;">Sombre</span>
+                    </div>
+                </div>
+                <h2 style="margin-top:30px;">Couleur d'accentuation</h2>
+                <div class="accent-colors" style="display:flex; gap:15px; margin-top:10px;">
+                    <div class="color-dot" style="width:24px; height:24px; border-radius:50%; cursor:pointer; background:#007aff;" onclick="setAccent('#007aff')"></div>
+                    <div class="color-dot" style="width:24px; height:24px; border-radius:50%; cursor:pointer; background:#ff3b30;" onclick="setAccent('#ff3b30')"></div>
+                    <div class="color-dot" style="width:24px; height:24px; border-radius:50%; cursor:pointer; background:#ff9500;" onclick="setAccent('#ff9500')"></div>
+                    <div class="color-dot" style="width:24px; height:24px; border-radius:50%; cursor:pointer; background:#34c759;" onclick="setAccent('#34c759')"></div>
+                    <div class="color-dot" style="width:24px; height:24px; border-radius:50%; cursor:pointer; background:#af52de;" onclick="setAccent('#af52de')"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Opus Formation App Template -->
+        <div id="app-content-opus">
+            <div class="project-content">
+                <h1 style="margin-bottom:20px;">Opus Formation</h1>
+
+                <h2 style="margin-bottom:15px;"><i class="fas fa-image" style="color:var(--apple-blue)"></i> Fiches Produits</h2>
+                <div class="project-gallery">
+                    <img src="opus_formation/fiche_produit/image/fiche_cbo_raclette.png" alt="Fiche CBO Raclette">
+                    <img src="opus_formation/fiche_produit/image/fiche_fish_nyc.png" alt="Fiche Fish New York">
+                    <img src="opus_formation/fiche_produit/image/fiche_mcveggie.png" alt="Fiche McVeggie">
+                    <img src="opus_formation/fiche_produit/image/fiche_royal_deluxe.png" alt="Fiche Royal Deluxe">
+                </div>
+
+                <h2 style="margin:30px 0 15px 0;"><i class="fas fa-film" style="color:var(--apple-blue)"></i> Diaporama McDonald's Roanne</h2>
+                <div class="project-video">
+                    <video controls muted loop>
+                        <source src="opus_formation/diaporama_mcdo_roanne/diapo.webm" type="video/webm">
+                        Votre navigateur ne supporte pas la vidéo.
+                    </video>
+                </div>
+
+                <h2 style="margin:30px 0 15px 0;"><i class="fas fa-film" style="color:var(--apple-blue)"></i> Diaporama Magasin Normal Roanne</h2>
+                <div class="project-video">
+                    <video controls muted loop>
+                        <source src="opus_formation/diaporama_magasin_normal_roanne/diaponormal.mp4" type="video/mp4">
+                        Votre navigateur ne supporte pas la vidéo.
+                    </video>
+                </div>
+            </div>
+        </div>
+
+        <!-- Garage 404 App Template -->
+        <div id="app-content-garage">
+            <div class="project-content">
+                <h1 style="margin-bottom:20px;">Garage 404 - Nos Réalisations</h1>
+                <div class="project-gallery">
+                    <img src="garage_404/realisation/img/devenezuntechnicien.png" alt="Devenez un technicien">
+                    <img src="garage_404/realisation/img/ecolealgora.png" alt="École Algora">
+                    <img src="garage_404/realisation/img/inauguration_mars_2022.png" alt="Inauguration">
+                </div>
+                <h2 style="margin:30px 0 20px 0;">Vidéo de Présentation</h2>
+                <div class="project-video">
+                    <video controls muted loop>
+                        <source src="garage_404/video/video_garage.mp4" type="video/mp4">
+                        Votre navigateur ne supporte pas la vidéo.
+                    </video>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phénix Info App Template -->
+        <div id="app-content-phenix">
+            <div class="project-content">
+                <h1 style="margin-bottom:20px;">Phénix Info - Maquettes Figma</h1>
+                <p style="margin-bottom:20px; color:var(--text-muted);">Voici les prototypes réalisés lors de mon stage.</p>
+                <div class="iframe-container">
+                    <iframe src="https://embed.figma.com/proto/5EoE7SpcitHhsDDZFFMISy/Sauna-Club-Des-Terreaux?node-id=1-2&starting-point-node-id=1%3A2&embed-host=share" allowfullscreen title="Prototype Figma Sauna Club" style="border:1px solid var(--border-color); border-radius:10px; width:100%; height:400px; margin-bottom:20px;"></iframe>
+                    <iframe src="https://embed.figma.com/design/5EoE7SpcitHhsDDZFFMISy/Sauna-Club-Des-Terreaux?node-id=0-1&embed-host=share" allowfullscreen title="Design Figma Sauna Club" style="border:1px solid var(--border-color); border-radius:10px; width:100%; height:400px; margin-bottom:20px;"></iframe>
+                </div>
+        <!-- Avis App Template -->
+        <div id="app-content-avis">
+            <div class="project-content" style="display:flex; flex-direction:column; align-items:center; text-align:center;">
+                <h1 style="margin-bottom:20px;">Avis et Recommandations</h1>
+                <p style="color:var(--text-muted); margin-bottom:30px;">Ce module est en cours de développement.</p>
+                <a href="avis/avis.html" target="_blank" style="padding:10px 20px; background:var(--apple-blue); color:#fff; border-radius:8px; text-decoration:none;">Ouvrir l'ancienne page d'avis</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Pierre-Louis Testu</title>
+    <link rel="icon" href="image/logo_final_v4.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --wallpaper: linear-gradient(160deg, #1a1a2e 0%, #16213e 30%, #0f3460 60%, #533483 100%);
+            --blur: blur(40px) saturate(180%);
+            --ios-blue: #007AFF;
+            --ios-green: #34C759;
+            --ios-red: #FF3B30;
+            --ios-orange: #FF9500;
+            --ios-purple: #AF52DE;
+            --ios-indigo: #5856D6;
+            --ios-pink: #FF2D55;
+            --ios-teal: #5AC8FA;
+            --ios-yellow: #FFCC00;
+            --card-light: rgba(255,255,255,0.72);
+            --card-dark: rgba(28,28,30,0.75);
+            --text-primary: #FFFFFF;
+            --text-secondary: rgba(255,255,255,0.75);
+            --separator: rgba(255,255,255,0.18);
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+        }
+        [data-theme="light"] {
+            --card-bg: rgba(242,242,247,1);
+            --cell-bg: rgba(255,255,255,1);
+            --text-main: #1C1C1E;
+            --text-muted: #8E8E93;
+            --sep: rgba(0,0,0,0.08);
+            --dock-bg: rgba(220,220,230,0.75);
+            --status-color: #1C1C1E;
+        }
+        [data-theme="dark"] {
+            --card-bg: #1C1C1E;
+            --cell-bg: #2C2C2E;
+            --text-main: #FFFFFF;
+            --text-muted: #636366;
+            --sep: rgba(255,255,255,0.06);
+            --dock-bg: rgba(28,28,30,0.78);
+            --status-color: #FFFFFF;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none; }
+        html, body { width:100%; height:100%; overflow:hidden; font-family: var(--font); }
+        body { background: var(--wallpaper); }
+
+        /* ===================== WALLPAPER ===================== */
+        .wallpaper {
+            position: fixed; inset: 0;
+            background: var(--wallpaper);
+            z-index: 0;
+        }
+        .wallpaper::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 30% 20%, rgba(120,80,220,0.5) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 80%, rgba(0,122,255,0.4) 0%, transparent 50%),
+                        radial-gradient(ellipse at 60% 40%, rgba(83,52,131,0.4) 0%, transparent 50%);
+        }
+
+        /* ===================== LOCK SCREEN ===================== */
+        #lock-screen {
+            position: fixed; inset: 0; z-index: 9000;
+            display: flex; flex-direction: column;
+            padding: env(safe-area-inset-top, 50px) 0 env(safe-area-inset-bottom, 20px);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+        #lock-screen.hidden {
+            opacity: 0; transform: scale(1.08);
+            pointer-events: none;
+        }
+
+        /* Dynamic Island */
+        .dynamic-island {
+            position: absolute; top: 12px; left: 50%;
+            transform: translateX(-50%);
+            width: 126px; height: 36px;
+            background: #000;
+            border-radius: 20px;
+            z-index: 100;
+        }
+
+        /* Lock top section */
+        .lock-top {
+            margin-top: 80px;
+            text-align: center;
+            padding: 0 24px;
+            flex: 1;
+        }
+        .lock-time {
+            font-size: 6rem; font-weight: 200; color: #fff;
+            letter-spacing: -4px; line-height: 1;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+        .lock-date {
+            font-size: 1.2rem; font-weight: 400;
+            color: rgba(255,255,255,0.85);
+            margin-top: 8px; letter-spacing: 0.2px;
+        }
+        .lock-notifications {
+            margin-top: 40px;
+            display: flex; flex-direction: column; gap: 10px;
+            padding: 0 20px;
+        }
+        .lock-notif {
+            background: rgba(255,255,255,0.18);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 18px; padding: 14px 16px;
+            display: flex; align-items: center; gap: 12px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .lock-notif-icon {
+            width: 36px; height: 36px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; color: white; flex-shrink: 0;
+        }
+        .lock-notif-text h4 { font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.7); }
+        .lock-notif-text p { font-size: 0.9rem; color: #fff; font-weight: 400; margin-top: 2px; }
+        .lock-notif-time { margin-left: auto; font-size: 0.75rem; color: rgba(255,255,255,0.6); }
+
+        /* Lock Bottom */
+        .lock-bottom {
+            padding: 0 24px 30px;
+            display: flex; flex-direction: column; align-items: center; gap: 20px;
+        }
+        .lock-swipe-hint {
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+        }
+        .lock-swipe-hint span {
+            font-size: 0.85rem; color: rgba(255,255,255,0.7); font-weight: 400;
+        }
+        .lock-swipe-arrows { animation: bounce 2s infinite; }
+        .lock-swipe-arrows i { color: rgba(255,255,255,0.8); font-size: 1.2rem; }
+        @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+        .lock-controls {
+            display: flex; justify-content: space-between; width: 100%;
+            padding: 0 10px;
+        }
+        .lock-ctrl-btn {
+            width: 52px; height: 52px; border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; color: #fff; cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.25);
+            transition: transform 0.15s;
+        }
+        .lock-ctrl-btn:active { transform: scale(0.9); }
+
+        /* User selection overlay */
+        #user-select {
+            position: fixed; inset: 0; z-index: 9500;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(30px);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 40px 24px;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        #user-select.show { opacity: 1; pointer-events: all; }
+        .user-select-title {
+            font-size: 1.6rem; font-weight: 700; color: #fff;
+            margin-bottom: 8px;
+        }
+        .user-select-sub { font-size: 0.95rem; color: rgba(255,255,255,0.6); margin-bottom: 40px; }
+        .user-cards { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+        .user-card {
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px; padding: 18px 20px;
+            display: flex; align-items: center; gap: 16px;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .user-card:active { transform: scale(0.97); background: rgba(255,255,255,0.2); }
+        .user-card-avatar {
+            width: 54px; height: 54px; border-radius: 50%; overflow: hidden;
+            flex-shrink: 0; border: 2px solid rgba(255,255,255,0.3);
+        }
+        .user-card-avatar img { width:100%; height:100%; object-fit:cover; }
+        .user-card-avatar-icon {
+            width: 54px; height: 54px; border-radius: 50%;
+            background: linear-gradient(135deg, #007aff, #5856d6);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; color: white; flex-shrink: 0;
+        }
+        .user-card-info h3 { font-size: 1.05rem; font-weight: 600; color: #fff; }
+        .user-card-info span { font-size: 0.82rem; color: rgba(255,255,255,0.55); }
+        .user-card-arrow { margin-left: auto; color: rgba(255,255,255,0.4); }
+        .user-select-cancel {
+            margin-top: 24px; padding: 16px 40px;
+            background: rgba(255,255,255,0.1); border: none;
+            border-radius: 14px; color: #fff; font-size: 1rem; font-weight: 500;
+            cursor: pointer; font-family: var(--font);
+        }
+
+        /* PIN Pad */
+        #pin-screen {
+            position: fixed; inset: 0; z-index: 9600;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(30px);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 40px 24px;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        #pin-screen.show { opacity: 1; pointer-events: all; }
+        .pin-user-avatar {
+            width: 70px; height: 70px; border-radius: 50%; overflow: hidden;
+            border: 3px solid rgba(255,255,255,0.5); margin-bottom: 16px;
+        }
+        .pin-user-avatar img { width:100%; height:100%; object-fit:cover; }
+        .pin-title { font-size: 1.3rem; font-weight: 600; color: #fff; margin-bottom: 4px; }
+        .pin-subtitle { font-size: 0.85rem; color: rgba(255,255,255,0.55); margin-bottom: 32px; }
+        .pin-dots { display: flex; gap: 18px; margin-bottom: 40px; }
+        .pin-dot {
+            width: 12px; height: 12px; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.6);
+            transition: all 0.15s;
+        }
+        .pin-dot.filled { background: #fff; border-color: #fff; transform: scale(1.1); }
+        .pin-dot.error { border-color: #FF3B30; background: #FF3B30; }
+        .pin-numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 280px; }
+        .pin-btn {
+            background: rgba(255,255,255,0.12);
+            border: none; border-radius: 50%; width: 76px; height: 76px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: #fff; cursor: pointer; transition: all 0.12s;
+            font-family: var(--font); justify-self: center;
+        }
+        .pin-btn:active { background: rgba(255,255,255,0.28); transform: scale(0.93); }
+        .pin-btn .num { font-size: 1.7rem; font-weight: 300; line-height: 1; }
+        .pin-btn .letters { font-size: 0.55rem; font-weight: 500; letter-spacing: 1.5px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+        .pin-btn.action { background: transparent; }
+        .pin-btn.action .num { font-size: 1rem; }
+        .pin-cancel { color: rgba(255,255,255,0.6); background: none; border:none; font-family:var(--font); font-size:0.95rem; margin-top:20px; cursor:pointer; }
+
+        /* ===================== STATUS BAR ===================== */
+        .status-bar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 4000;
+            height: env(safe-area-inset-top, 50px);
+            min-height: 50px;
+            display: flex; align-items: flex-end; justify-content: space-between;
+            padding: 0 24px 8px;
+            color: var(--status-color, #fff);
+        }
+        .status-bar.light-content { color: #1C1C1E; }
+        .status-time-bar { font-size: 0.9rem; font-weight: 600; }
+        .status-icons-bar { display: flex; gap: 6px; align-items: center; font-size: 0.8rem; }
+        .battery-icon { display: flex; align-items: center; gap: 2px; }
+        .battery-body { width: 22px; height: 11px; border: 1.5px solid currentColor; border-radius: 3px; padding: 1.5px; position: relative; }
+        .battery-body::after { content:''; position:absolute; right:-4px; top:50%; transform:translateY(-50%); width:2px; height:5px; background:currentColor; border-radius:0 1px 1px 0; }
+        .battery-fill { height: 100%; width: 75%; background: var(--ios-green); border-radius: 1px; }
+
+        /* ===================== HOME SCREEN ===================== */
+        #home {
+            position: fixed; inset: 0; z-index: 1000;
+            display: flex; flex-direction: column;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.4s;
+        }
+        #home.visible { opacity: 1; pointer-events: all; }
+
+        /* Widget area */
+        .widget-area {
+            padding: calc(env(safe-area-inset-top, 50px) + 10px) 20px 0;
+        }
+        .widget-time {
+            text-align: center; color: #fff;
+            font-size: 1.1rem; font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        /* App Grid */
+        .app-pages {
+            flex: 1; overflow: hidden;
+            display: flex; align-items: flex-start;
+            padding-top: 20px;
+        }
+        .app-page {
+            min-width: 100%; padding: 0 16px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px 8px;
+            align-content: start;
+        }
+        .app-cell {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 5px; cursor: pointer;
+        }
+        .app-cell:active .app-cell-icon { transform: scale(0.88); }
+        .app-cell-icon {
+            width: 62px; height: 62px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.7rem; color: white;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+            transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        .app-cell-label {
+            font-size: 0.68rem; color: #fff; text-align: center;
+            font-weight: 400; text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            max-width: 68px; line-height: 1.2;
+        }
+
+        /* Page dots */
+        .page-dots {
+            display: flex; gap: 6px; justify-content: center;
+            padding: 10px 0 16px;
+        }
+        .page-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: rgba(255,255,255,0.35);
+            transition: all 0.3s;
+        }
+        .page-dot.active { background: #fff; width: 20px; border-radius: 4px; }
+
+        /* ===================== DOCK ===================== */
+        .ios-dock {
+            margin: 0 16px;
+            margin-bottom: calc(env(safe-area-inset-bottom, 16px) + 8px);
+            background: var(--dock-bg, rgba(255,255,255,0.18));
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border-radius: 28px;
+            padding: 12px 20px;
+            display: flex; justify-content: space-around;
+            border: 1px solid rgba(255,255,255,0.22);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.3);
+        }
+        .dock-cell {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            cursor: pointer;
+        }
+        .dock-cell:active .dock-cell-icon { transform: scale(0.85); }
+        .dock-cell-icon {
+            width: 58px; height: 58px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem; color: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+            transition: transform 0.12s;
+        }
+
+        /* ===================== APP PANELS ===================== */
+        .app-panel {
+            position: fixed; inset: 0; z-index: 5000;
+            background: var(--card-bg, #F2F2F7);
+            display: flex; flex-direction: column;
+            transform: translateY(100%);
+            transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+        .app-panel.open { transform: translateY(0); }
+
+        /* Nav bar */
+        .app-nav {
+            background: var(--cell-bg, #fff);
+            border-bottom: 1px solid var(--sep, rgba(0,0,0,0.08));
+            padding: calc(env(safe-area-inset-top, 50px) + 4px) 16px 12px;
+            display: flex; align-items: center;
+        }
+        .app-nav-back {
+            display: flex; align-items: center; gap: 4px;
+            color: var(--ios-blue); font-size: 1rem; font-weight: 400;
+            background: none; border: none; cursor: pointer; font-family: var(--font);
+            padding: 4px 0;
+        }
+        .app-nav-back i { font-size: 1.1rem; }
+        .app-nav-title { flex: 1; text-align: center; font-size: 1rem; font-weight: 600; color: var(--text-main, #1C1C1E); }
+        .app-nav-spacer { width: 60px; }
+
+        /* Scroll body */
+        .app-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .app-body::-webkit-scrollbar { display: none; }
+
+        /* ========= CONTENT STYLES ========= */
+
+        /* Cards */
+        .list-card {
+            background: var(--cell-bg, #fff);
+            border-radius: 12px; margin: 0 16px 10px;
+            overflow: hidden;
+        }
+        .list-row {
+            padding: 13px 16px;
+            border-bottom: 1px solid var(--sep, rgba(0,0,0,0.07));
+            display: flex; align-items: center; gap: 14px;
+        }
+        .list-row:last-child { border-bottom: none; }
+        .list-row-icon {
+            width: 30px; height: 30px; border-radius: 7px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; color: white; flex-shrink: 0;
+        }
+        .list-row-body { flex: 1; }
+        .list-row-body h3 { font-size: 0.95rem; font-weight: 500; color: var(--text-main,#1c1c1e); }
+        .list-row-body p { font-size: 0.78rem; color: var(--text-muted, #8e8e93); margin-top: 2px; }
+        .list-row-chevron { color: var(--text-muted, #c7c7cc); font-size: 0.75rem; }
+
+        /* Section headers */
+        .section-label {
+            font-size: 0.8rem; font-weight: 600; color: var(--text-muted, #8E8E93);
+            text-transform: uppercase; letter-spacing: 0.5px;
+            padding: 24px 32px 8px;
+        }
+
+        /* Profile hero */
+        .profile-hero {
+            background: var(--cell-bg, #fff);
+            margin: 12px 16px; border-radius: 16px;
+            padding: 24px 20px; text-align: center;
+        }
+        .profile-hero img {
+            width: 90px; height: 90px; border-radius: 50%; object-fit: cover;
+            border: 3px solid var(--ios-blue); margin-bottom: 12px;
+        }
+        .profile-hero h1 { font-size: 1.3rem; font-weight: 700; color: var(--text-main,#1c1c1e); }
+        .profile-hero p { font-size: 0.88rem; color: var(--text-muted,#8e8e93); margin-top: 4px; }
+        .profile-hero .profile-bio {
+            font-size: 0.9rem; line-height: 1.65; color: var(--text-main,#1c1c1e);
+            margin-top: 16px; text-align: left;
+        }
+
+        /* Photo row */
+        .photo-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 0 16px 16px; }
+        .photo-scroll::-webkit-scrollbar { display: none; }
+        .photo-scroll img { height: 130px; border-radius: 12px; flex-shrink: 0; object-fit: cover; }
+
+        /* Skills */
+        .skills-flow { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 16px; }
+        .skill-chip {
+            background: rgba(0,122,255,0.12); color: var(--ios-blue);
+            padding: 5px 13px; border-radius: 20px; font-size: 0.82rem; font-weight: 500;
+        }
+
+        /* Gallery scroll */
+        .gallery-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 12px 16px; }
+        .gallery-scroll::-webkit-scrollbar { display: none; }
+        .gallery-scroll img { height: 200px; border-radius: 14px; flex-shrink: 0; object-fit: cover; }
+
+        /* Video */
+        .video-wrap { padding: 0 16px 16px; }
+        .video-wrap video { width: 100%; border-radius: 14px; }
+
+        /* Reviews */
+        .review-card {
+            background: var(--cell-bg, #fff);
+            border-radius: 12px; padding: 18px 16px; margin: 0 16px 10px;
+        }
+        .review-stars { color: var(--ios-orange); font-size: 0.95rem; margin-bottom: 8px; }
+        .review-text { font-size: 0.9rem; line-height: 1.65; color: var(--text-main,#1c1c1e); }
+        .review-author { font-size: 0.78rem; color: var(--text-muted,#8e8e93); margin-top: 10px; font-weight: 600; }
+
+        /* Mail */
+        .mail-field-card { background: var(--cell-bg,#fff); border-radius: 12px; margin: 0 16px 10px; overflow: hidden; }
+        .mail-field {
+            padding: 14px 16px; border-bottom: 1px solid var(--sep,rgba(0,0,0,0.07));
+            display: flex; align-items: center; gap: 10px;
+        }
+        .mail-field:last-child { border-bottom: none; }
+        .mail-field label { font-size: 0.9rem; color: var(--text-muted,#8e8e93); min-width: 45px; }
+        .mail-field input, .mail-field textarea {
+            flex: 1; background: none; border: none; outline: none;
+            font-family: var(--font); font-size: 0.95rem; color: var(--text-main,#1c1c1e);
+            resize: none; -webkit-user-select: text; user-select: text;
+        }
+        .mail-field textarea { min-height: 160px; padding: 4px 0; }
+        .mail-send {
+            margin: 6px 16px 16px; width: calc(100% - 32px);
+            background: var(--ios-blue); color: #fff; border: none;
+            border-radius: 12px; padding: 15px; font-size: 1rem; font-weight: 600;
+            cursor: pointer; font-family: var(--font); display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .mail-send:active { opacity: 0.8; }
+
+        /* Settings */
+        .settings-profile {
+            background: var(--cell-bg, #fff);
+            margin: 12px 16px; border-radius: 12px; padding: 14px 16px;
+            display: flex; align-items: center; gap: 14px;
+        }
+        .settings-profile img { width: 54px; height: 54px; border-radius: 50%; object-fit: cover; }
+        .settings-profile h3 { font-size: 1rem; font-weight: 600; color: var(--text-main,#1c1c1e); }
+        .settings-profile p { font-size: 0.82rem; color: var(--ios-blue); }
+        .settings-toggle { display: flex; gap: 10px; padding: 12px 16px; }
+        .theme-button {
+            flex: 1; padding: 12px 8px; border-radius: 10px; border: 2px solid transparent;
+            cursor: pointer; font-family: var(--font); font-size: 0.9rem; font-weight: 600;
+            transition: all 0.2s;
+        }
+        .theme-button.light { background: #f5f5f7; color: #1c1c1e; }
+        .theme-button.dark { background: #1c1c1e; color: #fff; }
+        .theme-button.selected { border-color: var(--ios-blue); }
+
+        /* Download btn */
+        .dl-row { display: flex; gap: 10px; padding: 0 16px 16px; }
+        .dl-btn {
+            flex: 1; background: var(--ios-blue); color: #fff; border: none;
+            border-radius: 12px; padding: 13px; font-family: var(--font);
+            font-size: 0.9rem; font-weight: 600; cursor: pointer; text-align: center;
+            text-decoration: none; display: block;
+        }
+        .dl-btn.green { background: var(--ios-green); }
+
+        /* Clickable row */
+        .tappable { cursor: pointer; }
+        .tappable:active { background: rgba(0,0,0,0.04); }
+
+        /* Logout row */
+        .logout-row { color: var(--ios-red) !important; }
+        .logout-row h3 { color: var(--ios-red) !important; }
+    </style>
+</head>
+<body data-theme="light">
+
+<!-- Wallpaper -->
+<div class="wallpaper"></div>
+
+<!-- Dynamic Island -->
+<div class="dynamic-island"></div>
+
+<!-- ===================== STATUS BAR ===================== -->
+<div class="status-bar" id="status-bar">
+    <div class="status-time-bar" id="status-time">9:41</div>
+    <div class="status-icons-bar">
+        <i class="fas fa-signal"></i>
+        <i class="fas fa-wifi"></i>
+        <div class="battery-icon">
+            <div class="battery-body"><div class="battery-fill"></div></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== LOCK SCREEN ===================== -->
+<div id="lock-screen">
+    <div class="lock-top">
+        <div class="lock-time" id="lock-time">9:41</div>
+        <div class="lock-date" id="lock-date-text">Dimanche 29 juin</div>
+
+        <div class="lock-notifications">
+            <div class="lock-notif">
+                <div class="lock-notif-icon" style="background:linear-gradient(135deg,#34c759,#30d158)"><i class="fas fa-user"></i></div>
+                <div class="lock-notif-text">
+                    <h4>Portfolio</h4>
+                    <p>Pierre-Louis Testu • Développeur Web</p>
+                </div>
+                <div class="lock-notif-time">maint.</div>
+            </div>
+            <div class="lock-notif">
+                <div class="lock-notif-icon" style="background:linear-gradient(135deg,#4ebaf8,#007aff)"><i class="fas fa-envelope"></i></div>
+                <div class="lock-notif-text">
+                    <h4>Mail</h4>
+                    <p>pierrtestu@icloud.com</p>
+                </div>
+                <div class="lock-notif-time">1h</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="lock-bottom">
+        <div class="lock-swipe-hint">
+            <div class="lock-swipe-arrows"><i class="fas fa-chevron-up"></i></div>
+            <span>Balayez vers le haut pour déverrouiller</span>
+        </div>
+        <div class="lock-controls">
+            <div class="lock-ctrl-btn" onclick="showUserSelect()"><i class="fas fa-flashlight"></i></div>
+            <div class="lock-ctrl-btn"><i class="fas fa-camera"></i></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== USER SELECT ===================== -->
+<div id="user-select">
+    <div class="user-select-title">Choisir un utilisateur</div>
+    <div class="user-select-sub">Sélectionnez votre profil pour continuer</div>
+    <div class="user-cards">
+        <div class="user-card" onclick="showPin()">
+            <div class="user-card-avatar">
+                <img src="image/portrait.jpeg" alt="PLT" onerror="this.parentElement.innerHTML='<i class=\'fas fa-user\' style=\'font-size:1.4rem;color:#fff;\'></i>'; this.parentElement.style.background='linear-gradient(135deg,#007aff,#5856d6)'">
+            </div>
+            <div class="user-card-info">
+                <h3>Pierre-Louis Testu</h3>
+                <span>Code requis</span>
+            </div>
+            <i class="fas fa-chevron-right user-card-arrow"></i>
+        </div>
+        <div class="user-card" onclick="unlockFree()">
+            <div class="user-card-avatar-icon"><i class="fas fa-user-tie"></i></div>
+            <div class="user-card-info">
+                <h3>Recruteur</h3>
+                <span>Accès libre</span>
+            </div>
+            <i class="fas fa-chevron-right user-card-arrow"></i>
+        </div>
+    </div>
+    <button class="user-select-cancel" onclick="closeUserSelect()">Annuler</button>
+</div>
+
+<!-- ===================== PIN SCREEN ===================== -->
+<div id="pin-screen">
+    <div class="pin-user-avatar">
+        <img src="image/portrait.jpeg" alt="PLT" onerror="this.style.display='none'">
+    </div>
+    <div class="pin-title">Pierre-Louis Testu</div>
+    <div class="pin-subtitle">Entrez le code</div>
+    <div class="pin-dots" id="pin-dots">
+        <div class="pin-dot"></div>
+        <div class="pin-dot"></div>
+        <div class="pin-dot"></div>
+        <div class="pin-dot"></div>
+    </div>
+    <div class="pin-numpad">
+        <button class="pin-btn" onclick="pinInput('1')"><span class="num">1</span><span class="letters">&nbsp;</span></button>
+        <button class="pin-btn" onclick="pinInput('2')"><span class="num">2</span><span class="letters">ABC</span></button>
+        <button class="pin-btn" onclick="pinInput('3')"><span class="num">3</span><span class="letters">DEF</span></button>
+        <button class="pin-btn" onclick="pinInput('4')"><span class="num">4</span><span class="letters">GHI</span></button>
+        <button class="pin-btn" onclick="pinInput('5')"><span class="num">5</span><span class="letters">JKL</span></button>
+        <button class="pin-btn" onclick="pinInput('6')"><span class="num">6</span><span class="letters">MNO</span></button>
+        <button class="pin-btn" onclick="pinInput('7')"><span class="num">7</span><span class="letters">PQRS</span></button>
+        <button class="pin-btn" onclick="pinInput('8')"><span class="num">8</span><span class="letters">TUV</span></button>
+        <button class="pin-btn" onclick="pinInput('9')"><span class="num">9</span><span class="letters">WXYZ</span></button>
+        <button class="pin-btn action" onclick="closePin()"><span class="num">Annuler</span></button>
+        <button class="pin-btn" onclick="pinInput('0')"><span class="num">0</span><span class="letters">&nbsp;</span></button>
+        <button class="pin-btn action" onclick="pinDelete()"><span class="num"><i class="fas fa-backspace"></i></span></button>
+    </div>
+</div>
+
+<!-- ===================== HOME SCREEN ===================== -->
+<div id="home">
+    <div class="widget-area">
+        <div class="widget-time" id="widget-time">Lun 15 Juin</div>
+    </div>
+    <div class="app-pages">
+        <div class="app-page">
+            <!-- Row 1 -->
+            <div class="app-cell" onclick="openPanel('p-about')">
+                <div class="app-cell-icon" style="background:linear-gradient(145deg,#34c759,#30d158)"><i class="fas fa-user"></i></div>
+                <div class="app-cell-label">À propos</div>
+            </div>
+            <div class="app-cell" onclick="openPanel('p-cv')">
+                <div class="app-cell-icon" style="background:linear-gradient(145deg,#007aff,#0a84ff)"><i class="fab fa-safari"></i></div>
+                <div class="app-cell-label">Parcours</div>
+            </div>
+            <div class="app-cell" onclick="openPanel('p-opus')">
+                <div class="app-cell-icon" style="background:linear-gradient(145deg,#ff9500,#ff6b00)"><i class="fas fa-hamburger"></i></div>
+                <div class="app-cell-label">Opus</div>
+            </div>
+            <div class="app-cell" onclick="openPanel('p-garage')">
+                <div class="app-cell-icon" style="background:linear-gradient(145deg,#5856d6,#4f4ed1)"><i class="fas fa-car"></i></div>
+                <div class="app-cell-label">Garage 404</div>
+            </div>
+            <!-- Row 2 -->
+            <div class="app-cell" onclick="openPanel('p-phenix')">
+                <div class="app-cell-icon" style="background:linear-gradient(145deg,#ff2d55,#ff375f)"><i class="fas fa-laptop-code"></i></div>
+                <div class="app-cell-label">Phénix Info</div>
+            </div>
+            <div class="app-cell" onclick="window.open('jeu/blockmasterDX/jeu.html','_blank')">
+                <div class="app-cell-icon" style="background:linear-gradient(145deg,#ff3b30,#ff453a)"><i class="fas fa-gamepad"></i></div>
+                <div class="app-cell-label">Block Master</div>
+            </div>
+            <div class="app-cell" onclick="openPanel('p-avis')">
+                <div class="app-cell-icon" style="background:linear-gradient(145deg,#ffcc00,#ffd60a)"><i class="fas fa-star" style="color:#1c1c1e"></i></div>
+                <div class="app-cell-label">Avis</div>
+            </div>
+            <div class="app-cell" onclick="openPanel('p-mail')">
+                <div class="app-cell-icon" style="background:linear-gradient(145deg,#007aff,#0a84ff)"><i class="fas fa-envelope"></i></div>
+                <div class="app-cell-label">Mail</div>
+            </div>
+            <!-- Row 3 -->
+            <div class="app-cell" onclick="openPanel('p-settings')">
+                <div class="app-cell-icon" style="background:linear-gradient(145deg,#8e8e93,#636366)"><i class="fas fa-cog"></i></div>
+                <div class="app-cell-label">Réglages</div>
+            </div>
+        </div>
+    </div>
+    <div class="page-dots">
+        <div class="page-dot active"></div>
+    </div>
+    <div class="ios-dock">
+        <div class="dock-cell" onclick="openPanel('p-about')">
+            <div class="dock-cell-icon" style="background:linear-gradient(145deg,#34c759,#30d158)"><i class="fas fa-user"></i></div>
+        </div>
+        <div class="dock-cell" onclick="openPanel('p-cv')">
+            <div class="dock-cell-icon" style="background:linear-gradient(145deg,#007aff,#0a84ff)"><i class="fab fa-safari"></i></div>
+        </div>
+        <div class="dock-cell" onclick="openPanel('p-mail')">
+            <div class="dock-cell-icon" style="background:linear-gradient(145deg,#007aff,#0a84ff)"><i class="fas fa-envelope"></i></div>
+        </div>
+        <div class="dock-cell" onclick="openPanel('p-settings')">
+            <div class="dock-cell-icon" style="background:linear-gradient(145deg,#8e8e93,#636366)"><i class="fas fa-cog"></i></div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== APP PANELS ===================== -->
+
+<!-- À PROPOS -->
+<div class="app-panel" id="p-about">
+    <div class="app-nav">
+        <button class="app-nav-back" onclick="closePanel('p-about')"><i class="fas fa-chevron-left"></i> Accueil</button>
+        <div class="app-nav-title">À propos</div>
+        <div class="app-nav-spacer"></div>
+    </div>
+    <div class="app-body">
+        <div class="profile-hero">
+            <img src="image/portrait.jpeg" alt="Pierre-Louis Testu" onerror="this.src='accueil/image1.png'" loading="lazy">
+            <h1>Pierre-Louis Testu</h1>
+            <p>Développeur Web & Designer</p>
+            <div class="profile-bio">
+                Bonjour, je m'appelle <strong>Pierre-Louis Testu</strong>.<br><br>
+                Passionné par les nouvelles technologies et l'univers de l'informatique, je consacre ce portfolio à mes réalisations et projets. Vous y découvrirez des projets issus de mes formations ainsi que des réalisations concrètes lors de mes stages, notamment chez Phénix Info.<br><br>
+                Mes centres d'intérêt sont les jeux vidéo, le cinéma et la technologie. J'ai une grande curiosité pour le numérique et j'adore apprendre de nouvelles choses dans ce domaine.
+            </div>
+        </div>
+        <div class="section-label">Photos</div>
+        <div class="photo-scroll">
+            <img src="accueil/image1.png" alt="Photo 1" loading="lazy">
+            <img src="accueil/image2.png" alt="Photo 2" loading="lazy">
+            <img src="accueil/image3.png" alt="Photo 3" loading="lazy">
+        </div>
+    </div>
+</div>
+
+<!-- PARCOURS / CV -->
+<div class="app-panel" id="p-cv">
+    <div class="app-nav">
+        <button class="app-nav-back" onclick="closePanel('p-cv')"><i class="fas fa-chevron-left"></i> Accueil</button>
+        <div class="app-nav-title">Mon Parcours</div>
+        <div class="app-nav-spacer"></div>
+    </div>
+    <div class="app-body">
+        <div class="section-label">Compétences</div>
+        <div class="list-card">
+            <div class="skills-flow">
+                <span class="skill-chip">Service Client</span><span class="skill-chip">Figma</span>
+                <span class="skill-chip">Adobe Photoshop</span><span class="skill-chip">Adobe InDesign</span>
+                <span class="skill-chip">WordPress / Elementor</span><span class="skill-chip">HTML / CSS / JS</span>
+                <span class="skill-chip">WebDesign</span><span class="skill-chip">Montage Vidéo</span>
+                <span class="skill-chip">Gestion des Stocks</span>
+            </div>
+        </div>
+
+        <div class="section-label">Expériences Professionnelles</div>
+        <div class="list-card">
+            <div class="list-row">
+                <div class="list-row-icon" style="background:var(--ios-orange)"><i class="fas fa-burger"></i></div>
+                <div class="list-row-body"><h3>Employé Polyvalent</h3><p>McDonald's France · 08/2023 – 06/2026</p></div>
+            </div>
+            <div class="list-row">
+                <div class="list-row-icon" style="background:var(--ios-teal)"><i class="fas fa-shopping-cart"></i></div>
+                <div class="list-row-body"><h3>Employé Commercial</h3><p>Leclerc Champvert · 04/2023 – 06/2023</p></div>
+            </div>
+            <div class="list-row">
+                <div class="list-row-icon" style="background:var(--ios-pink)"><i class="fas fa-laptop"></i></div>
+                <div class="list-row-body"><h3>Stagiaire Design / Web</h3><p>Phénix Info · 11/2022 – 01/2023</p></div>
+            </div>
+            <div class="list-row">
+                <div class="list-row-icon" style="background:var(--ios-indigo)"><i class="fas fa-code"></i></div>
+                <div class="list-row-body"><h3>Stagiaire Développement Web</h3><p>Garage 404 · 01/2022</p></div>
+            </div>
+            <div class="list-row">
+                <div class="list-row-icon" style="background:var(--ios-green)"><i class="fas fa-mobile-alt"></i></div>
+                <div class="list-row-body"><h3>Stagiaire Conseil Multimédia</h3><p>Happy Cash · 07/2021 – 09/2021</p></div>
+            </div>
+            <div class="list-row">
+                <div class="list-row-icon" style="background:var(--ios-red)"><i class="fas fa-store"></i></div>
+                <div class="list-row-body"><h3>Stagiaire</h3><p>Cocci Market · 06/2020 – 08/2020</p></div>
+            </div>
+        </div>
+
+        <div class="section-label">Formations &amp; Diplômes</div>
+        <div class="list-card">
+            <div class="list-row">
+                <div class="list-row-icon" style="background:var(--ios-green)"><i class="fas fa-graduation-cap"></i></div>
+                <div class="list-row-body"><h3>CAP Employé Commercial</h3><p>Opus Formation · 08/2024 – 10/2025</p></div>
+            </div>
+            <div class="list-row">
+                <div class="list-row-icon" style="background:var(--ios-blue)"><i class="fas fa-code"></i></div>
+                <div class="list-row-body"><h3>Formation Développeur Web</h3><p>HumanBooster · 03/2022 – 01/2023</p></div>
+            </div>
+            <div class="list-row">
+                <div class="list-row-icon" style="background:var(--ios-purple)"><i class="fas fa-film"></i></div>
+                <div class="list-row-body"><h3>Formation Découverte Multimédia</h3><p>CCI Formation · 09/2021 – 01/2022</p></div>
+            </div>
+            <div class="list-row">
+                <div class="list-row-icon" style="background:var(--ios-orange)"><i class="fas fa-utensils"></i></div>
+                <div class="list-row-body"><h3>CAP Restauration Collective</h3><p>MFR le Roseille · 10/2016 – 07/2018</p></div>
+            </div>
+        </div>
+
+        <div class="section-label">Contrats de Travail</div>
+        <div class="list-card">
+            <div class="list-row tappable" onclick="window.open('mes_experiences/Contrat/contratapprentissageapr.pdf','_blank')">
+                <div class="list-row-icon" style="background:var(--ios-indigo)"><i class="fas fa-file-pdf"></i></div>
+                <div class="list-row-body"><h3>Apprentissage APR</h3><p>Oct. 2016 – Juil. 2018</p></div>
+                <i class="fas fa-chevron-right list-row-chevron"></i>
+            </div>
+            <div class="list-row tappable" onclick="window.open('mes_experiences/Contrat/contratquick.pdf','_blank')">
+                <div class="list-row-icon" style="background:var(--ios-red)"><i class="fas fa-file-pdf"></i></div>
+                <div class="list-row-body"><h3>Quick</h3><p>Sept. – Oct. 2018</p></div>
+                <i class="fas fa-chevron-right list-row-chevron"></i>
+            </div>
+            <div class="list-row tappable" onclick="window.open('mes_experiences/Contrat/sodexo1.pdf','_blank')">
+                <div class="list-row-icon" style="background:var(--ios-blue)"><i class="fas fa-file-pdf"></i></div>
+                <div class="list-row-body"><h3>Sodexo #1</h3><p>Mars 2019</p></div>
+                <i class="fas fa-chevron-right list-row-chevron"></i>
+            </div>
+            <div class="list-row tappable" onclick="window.open('mes_experiences/Contrat/sodexo2.pdf','_blank')">
+                <div class="list-row-icon" style="background:var(--ios-blue)"><i class="fas fa-file-pdf"></i></div>
+                <div class="list-row-body"><h3>Sodexo #2</h3><p>Avr. – Mai 2019</p></div>
+                <i class="fas fa-chevron-right list-row-chevron"></i>
+            </div>
+            <div class="list-row tappable" onclick="window.open('mes_experiences/Contrat/stagehappycash2021.pdf','_blank')">
+                <div class="list-row-icon" style="background:var(--ios-green)"><i class="fas fa-file-pdf"></i></div>
+                <div class="list-row-body"><h3>Stage Happy Cash</h3><p>2021</p></div>
+                <i class="fas fa-chevron-right list-row-chevron"></i>
+            </div>
+            <div class="list-row tappable" onclick="window.open('mes_experiences/Contrat/contratleclerc.pdf','_blank')">
+                <div class="list-row-icon" style="background:var(--ios-teal)"><i class="fas fa-file-pdf"></i></div>
+                <div class="list-row-body"><h3>Leclerc</h3><p>2023</p></div>
+                <i class="fas fa-chevron-right list-row-chevron"></i>
+            </div>
+            <div class="list-row tappable" onclick="window.open('mes_experiences/Contrat/contratmcdo2.pdf','_blank')">
+                <div class="list-row-icon" style="background:var(--ios-orange)"><i class="fas fa-file-pdf"></i></div>
+                <div class="list-row-body"><h3>McDonald's 2023-2024</h3><p>Août 2023</p></div>
+                <i class="fas fa-chevron-right list-row-chevron"></i>
+            </div>
+            <div class="list-row tappable" onclick="window.open('mes_experiences/Contrat/contratmcdo3.pdf','_blank')">
+                <div class="list-row-icon" style="background:var(--ios-orange)"><i class="fas fa-file-pdf"></i></div>
+                <div class="list-row-body"><h3>McDonald's Alternance</h3><p>2024-2025</p></div>
+                <i class="fas fa-chevron-right list-row-chevron"></i>
+            </div>
+            <div class="list-row tappable" onclick="window.open('mes_experiences/Contrat/contratmcdo6.pdf','_blank')">
+                <div class="list-row-icon" style="background:var(--ios-orange)"><i class="fas fa-file-pdf"></i></div>
+                <div class="list-row-body"><h3>McDonald's Actuel</h3><p>Depuis Nov. 2025</p></div>
+                <i class="fas fa-chevron-right list-row-chevron"></i>
+            </div>
+        </div>
+
+        <div class="section-label">Télécharger</div>
+        <div class="dl-row">
+            <a href="cv/CV_Pierre-Louis_Testu2.pdf" download class="dl-btn"><i class="fas fa-file-pdf"></i> CV 2023</a>
+            <a href="portfolio_v1/Pierre_Louis_Testu_CV.pdf" download class="dl-btn green"><i class="fas fa-file-pdf"></i> CV 2022</a>
+        </div>
+    </div>
+</div>
+
+<!-- OPUS -->
+<div class="app-panel" id="p-opus">
+    <div class="app-nav">
+        <button class="app-nav-back" onclick="closePanel('p-opus')"><i class="fas fa-chevron-left"></i> Accueil</button>
+        <div class="app-nav-title">Opus Formation</div>
+        <div class="app-nav-spacer"></div>
+    </div>
+    <div class="app-body">
+        <div class="section-label">Fiches Produits McDonald's</div>
+        <div class="gallery-scroll">
+            <img src="opus_formation/fiche_produit/image/fiche_cbo_raclette.png" alt="CBO Raclette" loading="lazy">
+            <img src="opus_formation/fiche_produit/image/fiche_fish_nyc.png" alt="Fish NYC" loading="lazy">
+            <img src="opus_formation/fiche_produit/image/fiche_mcveggie.png" alt="McVeggie" loading="lazy">
+            <img src="opus_formation/fiche_produit/image/fiche_royal_deluxe.png" alt="Royal Deluxe" loading="lazy">
+        </div>
+        <div class="section-label">Diaporama McDonald's Roanne</div>
+        <div class="video-wrap">
+            <video controls muted loop preload="metadata">
+                <source src="opus_formation/diaporama_mcdo_roanne/diapo.webm" type="video/webm">
+            </video>
+        </div>
+        <div class="section-label">Diaporama Magasin Normal Roanne</div>
+        <div class="video-wrap">
+            <video controls muted loop preload="metadata">
+                <source src="opus_formation/diaporama_magasin_normal_roanne/diaponormal.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+</div>
+
+<!-- GARAGE 404 -->
+<div class="app-panel" id="p-garage">
+    <div class="app-nav">
+        <button class="app-nav-back" onclick="closePanel('p-garage')"><i class="fas fa-chevron-left"></i> Accueil</button>
+        <div class="app-nav-title">Garage 404</div>
+        <div class="app-nav-spacer"></div>
+    </div>
+    <div class="app-body">
+        <div class="section-label">Réalisations</div>
+        <div class="gallery-scroll">
+            <img src="garage_404/realisation/img/devenezuntechnicien.png" alt="Technicien" loading="lazy">
+            <img src="garage_404/realisation/img/ecolealgora.png" alt="École Algora" loading="lazy">
+            <img src="garage_404/realisation/img/inauguration_mars_2022.png" alt="Inauguration" loading="lazy">
+        </div>
+        <div class="section-label">Vidéo de Présentation</div>
+        <div class="video-wrap">
+            <video controls muted loop preload="metadata">
+                <source src="garage_404/realisation/video/video_garage.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+</div>
+
+<!-- PHENIX INFO -->
+<div class="app-panel" id="p-phenix">
+    <div class="app-nav">
+        <button class="app-nav-back" onclick="closePanel('p-phenix')"><i class="fas fa-chevron-left"></i> Accueil</button>
+        <div class="app-nav-title">Phénix Info</div>
+        <div class="app-nav-spacer"></div>
+    </div>
+    <div class="app-body">
+        <div class="section-label">Réalisations en stage</div>
+        <div class="gallery-scroll">
+            <img src="phenix_info/realisation/img/figma.png" alt="Figma" loading="lazy">
+            <img src="phenix_info/realisation/img/wordpress.png" alt="WordPress" loading="lazy">
+        </div>
+        <div class="section-label">À propos</div>
+        <div class="list-card">
+            <div class="list-row">
+                <div class="list-row-icon" style="background:var(--ios-pink)"><i class="fas fa-info"></i></div>
+                <div class="list-row-body"><h3>Stage Développement</h3><p>Villefranche-sur-Saône · Nov. 2022 – Jan. 2023</p></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AVIS -->
+<div class="app-panel" id="p-avis">
+    <div class="app-nav">
+        <button class="app-nav-back" onclick="closePanel('p-avis')"><i class="fas fa-chevron-left"></i> Accueil</button>
+        <div class="app-nav-title">Avis &amp; Recommandations</div>
+        <div class="app-nav-spacer"></div>
+    </div>
+    <div class="app-body">
+        <div class="section-label" style="padding-bottom:12px">2 recommandations</div>
+        <div class="review-card">
+            <div class="review-stars">★★★★★</div>
+            <div class="review-text">« Très sérieux, ponctuel et rigoureux. Pierre-Louis a démontré de réelles aptitudes en design et développement web lors de son stage chez nous. »</div>
+            <div class="review-author">— Phénix Info, Villefranche-sur-Saône</div>
+        </div>
+        <div class="review-card">
+            <div class="review-stars">★★★★★</div>
+            <div class="review-text">« Un stagiaire impliqué et créatif, qui a su s'adapter rapidement à nos outils et livrer des contenus de qualité. »</div>
+            <div class="review-author">— Garage 404, Roanne</div>
+        </div>
+    </div>
+</div>
+
+<!-- MAIL -->
+<div class="app-panel" id="p-mail">
+    <div class="app-nav">
+        <button class="app-nav-back" onclick="closePanel('p-mail')"><i class="fas fa-chevron-left"></i> Accueil</button>
+        <div class="app-nav-title">Nouveau message</div>
+        <div class="app-nav-spacer"></div>
+    </div>
+    <div class="app-body">
+        <div class="section-label" style="padding-top:16px">&nbsp;</div>
+        <div class="mail-field-card">
+            <div class="mail-field">
+                <label>À</label>
+                <input type="text" value="pierrtestu@icloud.com" readonly style="color:var(--ios-blue)">
+            </div>
+            <div class="mail-field">
+                <label>Objet</label>
+                <input type="text" id="ios-subject" placeholder="Prise de contact...">
+            </div>
+            <div class="mail-field" style="align-items:flex-start; padding-top:14px;">
+                <textarea id="ios-message" placeholder="Écrivez votre message ici..."></textarea>
+            </div>
+        </div>
+        <button class="mail-send" onclick="sendMail()"><i class="fas fa-paper-plane"></i> Envoyer</button>
+    </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="app-panel" id="p-settings">
+    <div class="app-nav">
+        <button class="app-nav-back" onclick="closePanel('p-settings')"><i class="fas fa-chevron-left"></i> Accueil</button>
+        <div class="app-nav-title">Réglages</div>
+        <div class="app-nav-spacer"></div>
+    </div>
+    <div class="app-body">
+        <div style="height:12px"></div>
+        <div class="settings-profile">
+            <img src="image/portrait.jpeg" alt="PLT" onerror="this.style.display='none'">
+            <div>
+                <h3>Pierre-Louis Testu</h3>
+                <p>pierrtestu@icloud.com</p>
+            </div>
+            <i class="fas fa-chevron-right" style="margin-left:auto; color:var(--text-muted,#c7c7cc);"></i>
+        </div>
+        <div class="section-label">Apparence</div>
+        <div class="list-card">
+            <div class="settings-toggle">
+                <button class="theme-button light selected" id="btn-light" onclick="setTheme('light')">☀️ Clair</button>
+                <button class="theme-button dark" id="btn-dark" onclick="setTheme('dark')">🌙 Sombre</button>
+            </div>
+        </div>
+        <div class="section-label">Compte</div>
+        <div class="list-card">
+            <div class="list-row tappable logout-row" onclick="doLogout()">
+                <div class="list-row-icon" style="background:var(--ios-red)"><i class="fas fa-sign-out-alt"></i></div>
+                <div class="list-row-body"><h3>Se déconnecter</h3></div>
+                <i class="fas fa-chevron-right list-row-chevron"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ===== CLOCK =====
+const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const monthsShort = ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Aoû','Sep','Oct','Nov','Déc'];
+
+function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const timeStr = `${h}:${m}`;
+    const dateStr = `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]}`;
+    const widgetStr = `${days[now.getDay()].substring(0,3)} ${now.getDate()} ${monthsShort[now.getMonth()]}`;
+
+    document.getElementById('lock-time').textContent = timeStr;
+    document.getElementById('lock-date-text').textContent = dateStr;
+    document.getElementById('status-time').textContent = timeStr;
+    if(document.getElementById('widget-time')) document.getElementById('widget-time').textContent = widgetStr;
+
+    const msNext = 60000 - (now.getSeconds()*1000 + now.getMilliseconds());
+    setTimeout(updateClock, msNext);
+}
+updateClock();
+
+// ===== LOCK + SWIPE =====
+let touchStartY = 0;
+const lockEl = document.getElementById('lock-screen');
+
+lockEl.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; });
+lockEl.addEventListener('touchend', e => {
+    const diff = touchStartY - e.changedTouches[0].clientY;
+    if (diff > 60) showUserSelect();
+});
+lockEl.addEventListener('click', showUserSelect);
+
+function showUserSelect() {
+    document.getElementById('user-select').classList.add('show');
+}
+function closeUserSelect() {
+    document.getElementById('user-select').classList.remove('show');
+}
+
+// ===== USERS =====
+function unlockFree() {
+    closeUserSelect();
+    doUnlock();
+}
+function showPin() {
+    closeUserSelect();
+    document.getElementById('pin-screen').classList.add('show');
+    pinCode = '';
+    updatePinDots();
+}
+function closePin() {
+    document.getElementById('pin-screen').classList.remove('show');
+    pinCode = '';
+    updatePinDots();
+}
+
+// ===== PIN =====
+let pinCode = '';
+const correctPin = '0000';
+
+function pinInput(d) {
+    if (pinCode.length >= 4) return;
+    pinCode += d;
+    updatePinDots();
+    if (pinCode.length === 4) setTimeout(checkPin, 150);
+}
+function pinDelete() {
+    pinCode = pinCode.slice(0,-1);
+    updatePinDots();
+}
+function updatePinDots() {
+    document.querySelectorAll('.pin-dot').forEach((dot,i) => {
+        dot.classList.toggle('filled', i < pinCode.length);
+        dot.classList.remove('error');
+    });
+}
+function checkPin() {
+    if (pinCode === correctPin) {
+        closePin();
+        doUnlock();
+    } else {
+        document.querySelectorAll('.pin-dot').forEach(d => d.classList.add('error'));
+        navigator.vibrate && navigator.vibrate([50,30,50,30,50]);
+        setTimeout(() => { pinCode = ''; updatePinDots(); }, 600);
+    }
+}
+
+// ===== UNLOCK =====
+function doUnlock() {
+    lockEl.classList.add('hidden');
+    document.getElementById('home').classList.add('visible');
+    // Apply theme to home
+    applyHomeTheme();
+    // Auto-open About
+    setTimeout(() => openPanel('p-about'), 500);
+}
+
+// ===== PANELS =====
+function openPanel(id) {
+    const p = document.getElementById(id);
+    if (!p) return;
+    p.style.display = 'flex';
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => p.classList.add('open'));
+    });
+    applyThemeToPanel(p);
+}
+function closePanel(id) {
+    const p = document.getElementById(id);
+    if (!p) return;
+    p.classList.remove('open');
+    setTimeout(() => p.style.display = '', 450);
+}
+
+// ===== MAIL =====
+function sendMail() {
+    const subject = encodeURIComponent(document.getElementById('ios-subject').value || 'Prise de contact');
+    const body = encodeURIComponent(document.getElementById('ios-message').value || '');
+    window.location.href = `mailto:pierrtestu@icloud.com?subject=${subject}&body=${body}`;
+}
+
+// ===== THEME =====
+let currentTheme = localStorage.getItem('ios-theme') || 'light';
+
+function setTheme(theme) {
+    currentTheme = theme;
+    localStorage.setItem('ios-theme', theme);
+    document.body.setAttribute('data-theme', theme);
+    document.getElementById('btn-light').classList.toggle('selected', theme === 'light');
+    document.getElementById('btn-dark').classList.toggle('selected', theme === 'dark');
+    // Status bar color
+    const sb = document.getElementById('status-bar');
+    if (theme === 'dark') sb.style.color = '#fff'; else sb.style.color = '';
+}
+function applyHomeTheme() { setTheme(currentTheme); }
+function applyThemeToPanel(p) { /* theme applied via CSS vars on body */ }
+
+setTheme(currentTheme);
+
+// ===== LOGOUT =====
+function doLogout() {
+    // Close all panels
+    document.querySelectorAll('.app-panel.open').forEach(p => {
+        p.classList.remove('open');
+        setTimeout(() => p.style.display = '', 450);
+    });
+    setTimeout(() => {
+        document.getElementById('home').classList.remove('visible');
+        lockEl.classList.remove('hidden');
+    }, 300);
+}
+</script>
+</body>
+</html>
