@@ -1,0 +1,311 @@
+/* === FICHIER dp.css (Mis à jour - Style Apple Retail Dark) === */
+
+/* --- Header Spécifique --- */
+.header {
+    margin-top: 20px;
+    text-align: center;
+    padding-top: 120px;
+}
+
+.header h1 {
+    font-size: 2.2rem;
+    color: #f5f5f7;
+    /* CHANGÉ: De Cyan à Blanc Cassé Apple */
+    text-shadow: none;
+    /* Suppression de la lueur */
+    transition: color 0.4s, text-shadow 0.4s;
+}
+
+.header p {
+    margin-top: 8px;
+    color: #8e8e93;
+    /* CHANGÉ: De Cyan transparent à Gris Moyen Apple */
+    text-shadow: none;
+    /* Suppression de la lueur */
+    transition: color 0.4s, text-shadow 0.4s;
+}
+
+/* Header Light Mode */
+.light-mode .header h1 {
+    color: #007aff;
+    /* Bleu Apple */
+    text-shadow: none;
+}
+
+.light-mode .header p {
+    color: #4a4a4a;
+    text-shadow: none;
+}
+
+
+/* --- Diaporama --- */
+.diaporama-container {
+    position: relative;
+    max-width: 1000px;
+    margin: 50px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.diaporama-container img {
+    display: block;
+    width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* AJOUT: Bordure neutre/subtile */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+    /* CHANGÉ: Ombre neutre au lieu de lueur cyan */
+}
+
+.diaporama-container img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+    /* CHANGÉ: Ombre neutre accentuée */
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Diapo Light Mode */
+.light-mode .diaporama-container img {
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.light-mode .diaporama-container img:hover {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+
+/* --- Flèches stylées (Verre Dépoli - Style Apple) --- */
+.prev,
+.next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(45, 45, 47, 0.6);
+    /* CHANGÉ: Fond verre gris Apple */
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    /* CHANGÉ: Bordure blanche subtile */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    /* CHANGÉ: Ombre neutre */
+    cursor: pointer;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
+}
+
+.prev::before,
+.next::before {
+    content: '';
+    display: block;
+    width: 12px;
+    height: 12px;
+    border-top: 2px solid #f5f5f7;
+    /* CHANGÉ: De Cyan à Blanc Cassé Apple */
+    border-right: 2px solid #f5f5f7;
+    /* CHANGÉ: De Cyan à Blanc Cassé Apple */
+    transition: border-color 0.25s;
+}
+
+.prev::before {
+    transform: rotate(-135deg);
+    margin-left: -2px;
+}
+
+.next::before {
+    transform: rotate(45deg);
+    margin-right: -2px;
+}
+
+.prev:hover,
+.next:hover {
+    background: rgba(60, 60, 62, 0.8);
+    /* CHANGÉ: Fond verre plus clair */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6);
+    /* CHANGÉ: Ombre plus prononcée */
+    transform: translateY(-50%) scale(1.05);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.prev:hover::before,
+.next:hover::before {
+    border-color: #ffffff;
+}
+
+/* Flèches Light Mode */
+.light-mode .prev,
+.light-mode .next {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.light-mode .prev::before,
+.light-mode .next::before {
+    border-color: #007aff;
+}
+
+.light-mode .prev:hover,
+.light-mode .next:hover {
+    background: rgba(0, 122, 255, 0.9);
+    border-color: transparent;
+}
+
+.light-mode .prev:hover::before,
+.light-mode .next:hover::before {
+    border-color: #ffffff;
+}
+
+/* Position flèches */
+.prev {
+    left: 20px;
+}
+
+.next {
+    right: 20px;
+}
+
+/* --- Fullscreen overlay --- */
+.fullscreen-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.97);
+    /* Fond plus opaque */
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.fullscreen-overlay.show {
+    display: flex;
+}
+
+.fullscreen-overlay img {
+    max-width: 90%;
+    max-height: 85%;
+    border-radius: 8px;
+    /* CHANGÉ: Lueur Bleue Apple au lieu de Cyan */
+    box-shadow: 0 0 50px rgba(0, 122, 255, 0.5);
+}
+
+/* Flèches en Fullscreen */
+.fullscreen-overlay .prev {
+    left: 30px;
+}
+
+.fullscreen-overlay .next {
+    right: 30px;
+}
+
+/* Bouton Fermer Fullscreen */
+.fullscreen-overlay .close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 2.5rem;
+    color: #f5f5f7;
+    /* CHANGÉ: De Cyan à Blanc Cassé Apple */
+    cursor: pointer;
+    text-shadow: none;
+    /* Suppression de la lueur */
+    transition: color 0.3s, transform 0.3s;
+    z-index: 2010;
+}
+
+.fullscreen-overlay .close-btn:hover {
+    color: #ff453a;
+    /* Rouge vif Apple */
+    transform: scale(1.1);
+}
+
+/* Close Light Mode */
+.light-mode .fullscreen-overlay .close-btn {
+    color: #515154;
+    text-shadow: none;
+}
+
+.light-mode .fullscreen-overlay .close-btn:hover {
+    color: #ff453a;
+    text-shadow: none;
+}
+
+/* --- Responsive Spécifique --- */
+@media (max-width: 1024px) {
+    .diaporama-container img {
+        max-height: 500px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        margin-top: 70px;
+    }
+
+    /* Diaporama mobile friendly */
+    .diaporama-container {
+        margin: 30px 5px;
+        padding: 0 5px;
+    }
+
+    .diaporama-container img {
+        width: 100%;
+        height: auto;
+        max-height: 60vh;
+        border-radius: 12px;
+    }
+
+    .prev,
+    .next {
+        width: 40px;
+        height: 40px;
+    }
+
+    .prev::before,
+    .next::before {
+        width: 10px;
+        height: 10px;
+    }
+
+    .prev {
+        left: 10px;
+    }
+
+    .next {
+        right: 10px;
+    }
+
+    .fullscreen-overlay img {
+        max-width: 95%;
+        max-height: 80%;
+    }
+
+    .fullscreen-overlay .prev {
+        left: 10px;
+    }
+
+    .fullscreen-overlay .next {
+        right: 10px;
+    }
+
+    .fullscreen-overlay .close-btn {
+        font-size: 2rem;
+        top: 10px;
+        right: 15px;
+    }
+}

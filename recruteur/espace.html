@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Personnel - Pierre-Louis Testu</title>
+    <link rel="icon" href="/image/logo_final_v4.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        /* ============================================
+           PREMIUM SOBER THEME
+           ============================================ */
+        :root {
+            --bg-page: #f8f9fa;
+            --bg-surface: #ffffff;
+            --text-main: #343a40;
+            --text-sub: #6c757d;
+            --border: #e2e8f0;
+            --primary: #0f172a;
+            /* Slate 900 */
+            --primary-hover: #1e293b;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- HEADER --- */
+        .top-nav {
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            padding: 0 32px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-brand {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-brand img {
+            height: 32px;
+        }
+
+        .nav-items {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* PREMIUM BUTTONS */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-outline-danger {
+            background-color: #fff;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline-danger:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+            background-color: #fef2f2;
+        }
+
+        /* --- LAYOUT --- */
+        .wrapper {
+            max-width: 1000px;
+            margin: 48px auto;
+            padding: 0 24px;
+            flex: 1;
+            width: 100%;
+        }
+
+        .header-title {
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-title h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0 0 8px;
+            letter-spacing: -0.03em;
+        }
+
+        .header-title p {
+            color: var(--text-sub);
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        /* --- SECTIONS --- */
+        .section {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .section-icon {
+            width: 36px;
+            height: 36px;
+            background: #f1f5f9;
+            color: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--primary);
+        }
+
+        /* --- FILES --- */
+        .files-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 16px;
+        }
+
+        .file-item {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .file-item:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .file-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .file-info .file-title {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .file-info .file-meta {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        /* Small Buttons for Files */
+        .btn-sm {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .btn-preview {
+            background: #f8fafc;
+            color: var(--text-main);
+            border-color: var(--border);
+        }
+
+        .btn-preview:hover {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+
+        .btn-download {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-download:hover {
+            background: var(--primary-hover);
+        }
+
+        /* --- UPLOAD FORM --- */
+        .form-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+        }
+
+        .upload-area {
+            border: 2px dashed var(--border);
+            background: #f8fafc;
+            padding: 40px;
+            text-align: center;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .upload-area:hover {
+            background: #f1f5f9;
+            border-color: var(--primary);
+        }
+
+        .submit-btn {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        /* --- ALERTS --- */
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+            font-size: 0.95rem;
+        }
+
+        .alert.success {
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert.error {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 32px 20px;
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            border-top: 1px solid var(--border);
+            background: #fff;
+        }
+
+        /* --- MODAL --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #fff;
+            padding: 32px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+        }
+
+        .modal-btns {
+            margin-top: 24px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .btn-modal {
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-modal-cancel {
+            background: #f1f5f9;
+            color: var(--text-main);
+        }
+
+        .btn-modal-confirm {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .top-nav {
+                padding: 0 20px;
+                height: 64px;
+            }
+
+            .nav-brand span {
+                display: none;
+            }
+
+            /* Hide text on small screens if needed, or keep */
+            .wrapper {
+                margin: 24px auto;
+            }
+
+            .btn span {
+                display: none;
+            }
+
+            .btn {
+                padding: 8px;
+            }
+
+            .btn i {
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="top-nav">
+        <a href="/accueil/accueil.html" class="nav-brand">
+            <img src="/image/logo_final_v4.png" alt="Logo">
+            Espace Personnel
+        </a>
+        <div class="nav-items">
+            <a href="admin.html" class="btn btn-primary">
+                <i class="fas fa-shield-alt"></i> <span>Admin</span>
+            </a>
+            <button class="btn btn-outline-danger" id="btnLogout">
+                <i class="fas fa-sign-out-alt"></i> <span>Déconnexion</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="wrapper">
+        <div class="header-title">
+            <h1>Zone de partage sécurisée</h1>
+            <p>Accédez à vos documents et transmettez vos fichiers en toute sécurité.</p>
+        </div>
+
+        <!-- Documents Section -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon"><i class="fas fa-folder-open"></i></div>
+                <h2>Documents à télécharger</h2>
+            </div>
+
+            <div class="files-grid">
+                <!-- STATIC FILE 1 -->
+                <div class="file-item">
+                    <div class="file-info">
+                        <div>
+                            <span class="file-title">Attestation R.Q.T.H.</span>
+                            <span class="file-meta">Document Officiel • PDF</span>
+                        </div>
+                        <i class="fas fa-file-pdf" style="color: #cbd5e1; font-size:1.5rem;"></i>
+                    </div>
+                    <div class="file-actions">
+                        <a href="../mes_experiences/rqth_pierre_louis.pdf" target="_blank" class="btn-sm btn-preview">
+                            <i class="fas fa-eye"></i> Aperçu
+                        </a>
+                        <a href="../mes_experiences/rqth_pierre_louis.pdf" download class="btn-sm btn-download">
+                            <i class="fas fa-download"></i> Télécharger
+                        </a>
+                    </div>
+                </div>
+
+                <!-- STATIC FILE 2 -->
+                <div class="file-item">
+                    <div class="file-info">
+                        <div>
+                            <span class="file-title">Carte Nationale d'Identité</span>
+                            <span class="file-meta">Copie certifiée • PDF</span>
+                        </div>
+                        <i class="fas fa-address-card" style="color: #cbd5e1; font-size:1.5rem;"></i>
+                    </div>
+                    <div class="file-actions">
+                        <a href="cni.pdf" target="_blank" class="btn-sm btn-preview">
+                            <i class="fas fa-eye"></i> Aperçu
+                        </a>
+                        <a href="cni.pdf" download class="btn-sm btn-download">
+                            <i class="fas fa-download"></i> Télécharger
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Files -->
+            <div id="validated-docs-container" style="display:none; margin-top: 24px;">
+                <h3 style="font-size:1rem; color:var(--text-sub); margin-bottom:12px;">Documents validés</h3>
+                <div id="validated-files-list" class="files-grid"></div>
+            </div>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                <h2>Transmettre un document</h2>
+            </div>
+
+            <form id="uploadForm" class="form-grid">
+                <div class="form-group">
+                    <div class="upload-area" id="fileDrop">
+                        <i class="fas fa-file-import" style="font-size: 2rem; color: #94a3b8; margin-bottom: 16px;"></i>
+                        <div style="font-weight: 500; margin-bottom: 4px;">Cliquez ou glissez votre fichier ici</div>
+                        <div style="color: var(--text-sub); font-size: 0.85rem;">PDF, Word, Images (Max 10Mo)</div>
+                        <div id="fileName" style="margin-top: 12px; font-weight: 600; color: var(--primary);"></div>
+                        <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" required
+                            style="position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Intitulé du document</label>
+                    <input type="text" id="description" class="form-control" placeholder="Ex: Contrat de travail..."
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label>Votre identité (Facultatif)</label>
+                    <input type="text" id="uploaderName" class="form-control" placeholder="Nom de votre entreprise">
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i> Envoyer le document
+                </button>
+                <div class="alert" id="status"></div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2025 Pierre-Louis Testu. Tous droits réservés.
+    </footer>
+
+    <!-- Logout Modal -->
+    <div id="logoutModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="margin-top:0; color:var(--primary);">Confirmer la déconnexion</h3>
+            <p style="color:var(--text-sub);">Êtes-vous sûr de vouloir quitter votre espace personnel ?</p>
+            <div class="modal-btns">
+                <button class="btn-modal btn-modal-cancel" id="cancelLogout">Annuler</button>
+                <button class="btn-modal btn-modal-confirm" id="confirmLogout">Déconnexion</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT (Preserved Logic) -->
+    <script>
+        (function () {
+            // === CONFIG ===
+            const TELEGRAM_TOKEN = "8556012748:AAF-MGeFBxfwBRM2KiCAnfPXpjGSeY-vSz4";
+            const TELEGRAM_CHAT_ID = "8167985414";
+
+            const SUPABASE_URL = 'https://xkjynbeyrxtdotwroesk.supabase.co';
+            const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhranluYmV5cnh0ZG90d3JvZXNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzMjU4OTgsImV4cCI6MjA4MzkwMTg5OH0.AsT0htx3Zpsq2oVESfSjuBgEvbszpipgqdhhmL4Et30';
+            const visitStartTime = new Date();
+            let supabaseClient = null;
+
+            // === TELEGRAM UTILS ===
+            function sendTelegram(msg) {
+                const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(msg)}&parse_mode=HTML`;
+                fetch(url).then(response => {
+                    if (!response.ok) console.log('Telegram Error:', response.statusText);
+                }).catch(err => console.log('Telegram Fetch Error:', err));
+            }
+
+            // === AUTH CHECK ===
+            const isAuth = sessionStorage.getItem('recruiter_authenticated') === 'true' ||
+                sessionStorage.getItem('adminAuthenticated') === 'true';
+
+            if (!isAuth && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+                window.location.href = '../accueil/accueil.html';
+                return;
+            }
+
+            // === INIT ===
+            try {
+                if (window.supabase) supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+                // Only send alert if it's a new session or refresh
+                if (!sessionStorage.getItem('visit_alert_sent')) {
+                    sendTelegram(`🔔 <b>Connexion Espace Personnel</b>\n${new Date().toLocaleString()}\n${navigator.userAgent}`);
+                    sessionStorage.setItem('visit_alert_sent', 'true');
+                }
+            } catch (e) {
+                console.log('Mode Offline');
+            }
+
+            // === UPLOAD LOGIC ===
+            const fileInput = document.getElementById('fileInput');
+            const fileDrop = document.getElementById('fileDrop');
+            const fileNameDisplay = document.getElementById('fileName');
+            const statusDiv = document.getElementById('status');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Drag effects
+            fileDrop.addEventListener('dragover', (e) => { e.preventDefault(); fileDrop.style.borderColor = 'var(--primary)'; fileDrop.style.backgroundColor = '#eff6ff'; });
+            fileDrop.addEventListener('dragleave', (e) => { e.preventDefault(); fileDrop.style.borderColor = 'var(--border)'; fileDrop.style.backgroundColor = '#f8fafc'; });
+            fileDrop.addEventListener('drop', (e) => {
+                e.preventDefault();
+                fileDrop.style.borderColor = 'var(--border)';
+                fileDrop.style.backgroundColor = '#f8fafc';
+                if (e.dataTransfer.files.length) {
+                    fileInput.files = e.dataTransfer.files;
+                    updateName();
+                }
+            });
+
+            fileInput.addEventListener('change', updateName);
+            function updateName() {
+                if (fileInput.files.length) fileNameDisplay.innerText = "📄 " + fileInput.files[0].name;
+            }
+
+            document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!fileInput.files.length) return;
+
+                const file = fileInput.files[0];
+                const desc = document.getElementById('description').value;
+                const who = document.getElementById('uploaderName').value || 'Anonyme';
+                const path = `uploads/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+
+                statusDiv.style.display = 'none';
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+
+                try {
+                    if (!supabaseClient) throw new Error("Erreur de connexion serveur.");
+
+                    const { error: upErr } = await supabaseClient.storage.from('documents').upload(path, file);
+                    if (upErr) throw upErr;
+
+                    const { error: dbErr } = await supabaseClient.from('uploads').insert([{
+                        filename: file.name, filepath: path, description: desc, uploader_info: who, status: 'pending'
+                    }]);
+                    if (dbErr) throw dbErr;
+
+                    statusDiv.className = 'alert success';
+                    statusDiv.innerHTML = "✅ Document transmis avec succès !";
+                    statusDiv.style.display = 'block';
+                    sendTelegram(`📂 <b>Nouveau Document</b>\n📄 ${file.name}\n👤 ${who}\n📝 ${desc}`);
+                    e.target.reset();
+                    fileNameDisplay.innerText = "";
+                } catch (err) {
+                    statusDiv.className = 'alert error';
+                    statusDiv.innerHTML = "❌ Erreur : " + err.message;
+                    statusDiv.style.display = 'block';
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer le document';
+                }
+            });
+
+            // === LOAD FILES ===
+            async function loadFiles() {
+                if (!supabaseClient) return;
+                const { data } = await supabaseClient.from('uploads').select('*').eq('status', 'validated').order('created_at', { ascending: false });
+                if (data && data.length) {
+                    const container = document.getElementById('validated-docs-container');
+                    const list = document.getElementById('validated-files-list');
+                    container.style.display = 'block';
+                    list.innerHTML = '';
+                    data.forEach(f => {
+                        const url = f.file_url || `${SUPABASE_URL}/storage/v1/object/public/documents/${f.filepath}`;
+                        const div = document.createElement('div');
+                        div.className = 'file-item';
+                        div.innerHTML = `
+                            <div class="file-info">
+                                <div>
+                                    <span class="file-title">${f.description || f.filename}</span>
+                                    <span class="file-meta">Mis à disposition le ${new Date(f.created_at).toLocaleDateString()}</span>
+                                </div>
+                                <i class="fas fa-file-contract" style="color: var(--primary); font-size:1.5rem;"></i>
+                            </div>
+                            <div class="file-actions">
+                                <a href="${url}" target="_blank" class="btn-sm btn-preview">
+                                    <i class="fas fa-eye"></i> Aperçu
+                                </a>
+                                <a href="${url}" download class="btn-sm btn-download">
+                                    <i class="fas fa-download"></i> Télécharger
+                                </a>
+                            </div>
+                        `;
+                        list.appendChild(div);
+                    });
+                }
+            }
+            loadFiles();
+
+            // === LOGOUT ===
+            const modal = document.getElementById('logoutModal');
+            document.getElementById('btnLogout').onclick = () => modal.classList.add('active');
+            document.getElementById('cancelLogout').onclick = () => modal.classList.remove('active');
+            document.getElementById('confirmLogout').onclick = () => {
+                sendTelegram(`🚪 <b>Déconnexion Profil</b>`);
+                sessionStorage.clear();
+                localStorage.removeItem('recruiterAuthenticated');
+                localStorage.removeItem('adminAuthenticated');
+                window.location.href = '../accueil/accueil.html';
+            };
+        })();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,10 @@
+{
+    "name": "block-master-dx",
+    "version": "1.2.0",
+    "description": "Block Master DX - Web Game",
+    "main": "index.html",
+    "scripts": {
+        "build": "echo 'No build command needed'"
+    },
+    "dependencies": {}
+}

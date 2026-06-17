@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zone de Test - Debugging</title>
+    <link rel="icon" href="../image/logo_final_v4.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-page: #f8fafc;
+            --bg-surface: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border: #e2e8f0;
+            --primary: #7c3aed;
+            /* Violet for Test Zone */
+            --success: #10b981;
+            --danger: #ef4444;
+            --code-bg: #1e293b;
+            --code-text: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-page);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: var(--text-sub);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-btn:hover {
+            color: var(--text-main);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.1rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .info-label {
+            color: var(--text-sub);
+        }
+
+        .info-val {
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .console-output {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 15px;
+            border-radius: 8px;
+            height: 150px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        .log-entry {
+            margin-bottom: 4px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 2px;
+        }
+
+        .log-time {
+            color: #64748b;
+            margin-right: 8px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-family: inherit;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .online {
+            background: var(--success);
+        }
+
+        .offline {
+            background: var(--danger);
+        }
+
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-flask" style="color:var(--primary);"></i> Zone de Test</h1>
+            <a href="admin.html" class="back-btn"><i class="fas fa-arrow-left"></i> Retour Admin</a>
+        </header>
+
+        <div class="grid">
+            <!-- 1. SYSTEM INFO -->
+            <div class="card">
+                <h2><i class="fas fa-desktop"></i> Infos Système</h2>
+                <div class="info-row"><span class="info-label">Platform</span><span class="info-val"
+                        id="sys-plat">...</span></div>
+                <div class="info-row"><span class="info-label">User Agent</span><span class="info-val" id="sys-ua"
+                        style="font-size:0.7rem; max-width:200px; text-align:right;">...</span></div>
+                <div class="info-row"><span class="info-label">Screen</span><span class="info-val"
+                        id="sys-screen">...</span></div>
+                <div class="info-row"><span class="info-label">Language</span><span class="info-val"
+                        id="sys-lang">...</span></div>
+                <div class="info-row"><span class="info-label">Connection</span><span class="info-val"
+                        id="sys-conn">...</span></div>
+                <div class="info-row"><span class="info-label">Status</span><span class="info-val" id="sys-status"><span
+                            class="status-dot"></span>...</span></div>
+            </div>
+
+            <!-- 2. TELEGRAM TEST -->
+            <div class="card">
+                <h2><i class="fab fa-telegram"></i> Telegram Debug</h2>
+                <input type="text" id="tg-msg" placeholder="Message de test..."
+                    value="Ceci est un test depuis la Zone de Test">
+                <button class="btn" onclick="testTelegram()">
+                    <i class="fas fa-paper-plane"></i> Envoyer Test
+                </button>
+                <div id="tg-result" style="margin-top:10px; font-size:0.85rem; color:var(--text-sub);"></div>
+            </div>
+
+            <!-- 3. STORAGE & COOKIES -->
+            <div class="card">
+                <h2><i class="fas fa-database"></i> Stockage Local</h2>
+                <div style="margin-bottom:10px; font-weight:600;">LocalStorage Keys:</div>
+                <div id="storage-list"
+                    style="background:#f1f5f9; padding:10px; border-radius:6px; font-family:monospace; font-size:0.8rem; margin-bottom:15px; max-height:100px; overflow-y:auto;">
+                </div>
+
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-danger" onclick="clearStore('local')">Vid. Local</button>
+                    <button class="btn btn-danger" onclick="clearStore('session')">Vid. Session</button>
+                    <button class="btn" style="background:var(--text-sub)"
+                        onclick="refreshStorage()">Actualiser</button>
+                </div>
+            </div>
+
+            <!-- 4. CONSOLE & NETWORK -->
+            <div class="card">
+                <h2><i class="fas fa-terminal"></i> Console & Réseau</h2>
+                <div style="display:flex; gap:10px; margin-bottom:10px;">
+                    <button class="btn" onclick="log('Test manuel de log')">Log Test</button>
+                    <button class="btn btn-success" onclick="testNetwork()">Ping Google</button>
+                </div>
+                <div class="console-output" id="console"></div>
+            </div>
+
+            <!-- 5. UI COMPONENTS -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2><i class="fas fa-palette"></i> UI Playground</h2>
+                <div style="display:flex; gap:15px; flex-wrap:wrap;">
+                    <button class="btn" onclick="alert('Bouton Standard')">Standard</button>
+                    <button class="btn btn-success" onclick="alert('Succès !')">Success</button>
+                    <button class="btn btn-danger" onclick="alert('Danger !')">Danger</button>
+                    <button class="btn"
+                        style="background:white; color:var(--text-main); border:1px solid var(--border);"
+                        onclick="alert('Outline')">Outline</button>
+
+                    <button class="btn" onclick="document.body.classList.toggle('dark-mode-sim')"
+                        style="margin-left:auto;">
+                        <i class="fas fa-adjust"></i> Simuler Dark Mode
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        const TG_TOKEN = "8556012748:AAF-MGeFBxfwBRM2KiCAnfPXpjGSeY-vSz4";
+        const TG_CHAT_ID = "8167985414";
+
+        // === SYSTEM INFO ===
+        function initSystem() {
+            document.getElementById('sys-plat').innerText = navigator.platform;
+            document.getElementById('sys-ua').innerText = navigator.userAgent;
+            document.getElementById('sys-screen').innerText = `${window.screen.width}x${window.screen.height}`;
+            document.getElementById('sys-lang').innerText = navigator.language;
+
+            const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            document.getElementById('sys-conn').innerText = conn ? conn.effectiveType : 'Unknown';
+
+            updateOnlineStatus();
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+        }
+
+        function updateOnlineStatus() {
+            const el = document.getElementById('sys-status');
+            if (navigator.onLine) {
+                el.innerHTML = '<span class="status-dot online"></span> En Ligne';
+            } else {
+                el.innerHTML = '<span class="status-dot offline"></span> Hors Ligne';
+            }
+        }
+
+        // === TELEGRAM ===
+        function testTelegram() {
+            const msg = document.getElementById('tg-msg').value;
+            const resEl = document.getElementById('tg-result');
+            resEl.innerText = "Envoi...";
+
+            fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_CHAT_ID}&text=${encodeURIComponent(msg)}&parse_mode=HTML`)
+                .then(r => r.json())
+                .then(d => {
+                    if (d.ok) {
+                        resEl.innerText = "✅ Succès: Message ID " + d.result.message_id;
+                        resEl.style.color = "var(--success)";
+                        log("Telegram Sent: ID " + d.result.message_id);
+                    } else {
+                        throw new Error(d.description);
+                    }
+                })
+                .catch(e => {
+                    resEl.innerText = "❌ Erreur: " + e.message;
+                    resEl.style.color = "var(--danger)";
+                    log("Telegram Error: " + e.message);
+                });
+        }
+
+        // === STORAGE ===
+        function refreshStorage() {
+            const list = document.getElementById('storage-list');
+            let html = '';
+
+            if (localStorage.length === 0) html += '<div style="opacity:0.5">LocalStorage Vide</div>';
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                html += `<div><span style="color:#7c3aed">${k}</span>: ${localStorage.getItem(k).substring(0, 30)}...</div>`;
+            }
+
+            html += '<div style="border-top:1px solid #ddd; margin:5px 0;"></div>';
+
+            if (sessionStorage.length === 0) html += '<div style="opacity:0.5">SessionStorage Vide</div>';
+            for (let i = 0; i < sessionStorage.length; i++) {
+                const k = sessionStorage.key(i);
+                html += `<div><span style="color:#2563eb">${k}</span>: ${sessionStorage.getItem(k)}</div>`;
+            }
+
+            list.innerHTML = html;
+        }
+
+        function clearStore(type) {
+            if (confirm(`Vider ${type} storage ?`)) {
+                if (type === 'local') localStorage.clear();
+                if (type === 'session') sessionStorage.clear();
+                refreshStorage();
+                log(`Cleared ${type} storage`);
+            }
+        }
+
+        // === CONSOLE & NETWORK ===
+        function log(msg) {
+            const c = document.getElementById('console');
+            const time = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = 'log-entry';
+            div.innerHTML = `<span class="log-time">[${time}]</span> ${msg}`;
+            c.appendChild(div);
+            c.scrollTop = c.scrollHeight;
+        }
+
+        function testNetwork() {
+            log("Pinging google.com...");
+            const img = new Image();
+            const start = Date.now();
+            img.onload = () => {
+                const dur = Date.now() - start;
+                log(`✅ Pong! (${dur}ms)`);
+            };
+            img.onerror = () => {
+                log("❌ Network Error / Blocked");
+            };
+            img.src = "https://www.google.com/favicon.ico?" + Date.now();
+        }
+
+        // INIT
+        initSystem();
+        refreshStorage();
+        log("Test Zone Initialized.");
+
+    </script>
+</body>
+
+</html>

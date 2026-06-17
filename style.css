@@ -1,0 +1,383 @@
+/* === FICHIER style.css (APPLE THEME - macOS / iOS Style) === */
+
+/* --- Reset & Base --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-color: #F5F5F7;
+    --text-color: #1d1d1f;
+    --accent-color: #86868b;
+    --nav-bg: rgba(255, 255, 255, 0.72);
+    --border-color: rgba(0, 0, 0, 0.1);
+    --card-bg: #ffffff;
+    --shadow: 0 4px 24px rgba(0,0,0,0.06);
+    --primary-blue: #0071e3;
+    --border-radius-lg: 18px;
+    --border-radius-md: 12px;
+}
+
+body.dark-mode {
+    --bg-color: #000000;
+    --text-color: #f5f5f7;
+    --accent-color: #86868b;
+    --nav-bg: rgba(29, 29, 31, 0.72);
+    --border-color: rgba(255, 255, 255, 0.15);
+    --card-bg: #1c1c1e;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.47059;
+    letter-spacing: -0.022em;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Typography --- */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    margin-bottom: 1rem;
+}
+
+a {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+/* --- Layout --- */
+.main-content {
+    flex: 1;
+    padding: 120px 20px 60px;
+    max-width: 1000px; /* Un peu plus concentré style Apple */
+    margin: 0 auto;
+    width: 100%;
+}
+
+.header {
+    text-align: center;
+    padding: 140px 20px 40px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.header h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+}
+
+.header p {
+    font-size: 1.3rem;
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
+/* --- Navbar (macOS / iOS Frost Style) --- */
+.navbar-epure {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--nav-bg);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid var(--border-color);
+    z-index: 1000;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 48px; /* Hauteur standard Apple navbar */
+}
+
+.nav-brand {
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: -0.01em;
+}
+
+.menu-epure {
+    display: flex;
+    list-style: none;
+    gap: 32px;
+    align-items: center;
+    height: 100%;
+}
+
+.menu-epure > li {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.menu-epure > li > a {
+    font-size: 0.85rem; /* Très fin, style menu bar */
+    font-weight: 400;
+    color: var(--text-color);
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.menu-epure > li > a:hover {
+    opacity: 1;
+}
+
+/* Dropdown */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--nav-bg);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    min-width: 220px;
+    box-shadow: var(--shadow);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--border-color);
+    padding: 8px 0;
+    list-style: none;
+    z-index: 1001;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    animation: fadeIn 0.2s ease;
+}
+
+.dropdown-content li a {
+    padding: 10px 20px;
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    transition: background 0.2s ease;
+}
+
+.dropdown-content li a:hover {
+    background: var(--primary-blue);
+    color: #fff;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+}
+
+.theme-toggle-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.theme-toggle-btn:hover {
+    opacity: 1;
+}
+
+.burger {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.burger span {
+    width: 20px;
+    height: 2px;
+    background-color: var(--text-color);
+    border-radius: 2px;
+    transition: 0.3s;
+}
+
+/* --- Text Image Container (Accueil) --- */
+.text-image-container {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+    margin-top: 20px;
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow);
+}
+
+.text-content {
+    flex: 1;
+}
+
+.text-content h2 {
+    font-size: 2.2rem;
+    margin-bottom: 20px;
+}
+
+.text-content p {
+    font-size: 1.1rem;
+    color: var(--accent-color);
+}
+
+.text-content strong {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.image-content {
+    flex: 1;
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+}
+
+.slider-track img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    border-radius: var(--border-radius-md);
+}
+
+/* --- Galleries & Videos (Subpages) --- */
+.video-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    background: #000;
+}
+
+.video-container video {
+    width: 100%;
+    display: block;
+}
+
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+}
+
+.gallery-item img, .gallery img {
+    max-width: 100%;
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.gallery-item img:hover, .gallery img:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+
+/* --- Footer --- */
+.footer-epure {
+    background: var(--bg-color);
+    padding: 40px 20px;
+    text-align: center;
+    margin-top: auto;
+}
+
+.footer-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+}
+
+.footer-container p {
+    color: var(--accent-color);
+    font-size: 0.85rem;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.footer-links a {
+    font-size: 0.85rem;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.footer-links a:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+/* --- Utilities --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px) translateX(-50%); }
+    to { opacity: 1; transform: translateY(0) translateX(-50%); }
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .menu-epure {
+        display: none;
+        position: absolute;
+        top: 48px;
+        left: 0;
+        width: 100%;
+        background: var(--nav-bg);
+        backdrop-filter: saturate(180%) blur(20px);
+        -webkit-backdrop-filter: saturate(180%) blur(20px);
+        flex-direction: column;
+        padding: 20px 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .menu-epure.active {
+        display: flex;
+    }
+
+    .burger {
+        display: flex;
+    }
+
+    .dropdown-content {
+        position: static;
+        transform: none;
+        box-shadow: none;
+        border: none;
+        background: transparent;
+        display: none;
+        padding-left: 20px;
+    }
+
+    .dropdown.active .dropdown-content {
+        display: block;
+    }
+
+    .text-image-container {
+        flex-direction: column;
+        padding: 20px;
+    }
+}

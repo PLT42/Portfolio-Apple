@@ -1,0 +1,271 @@
+/* === WINDOWS XP THEME - 100% PROFESSIONNEL & FIDÈLE === */
+/* PAS DE NEON - PAS D'EFFETS TV - STYLE PROPRE */
+
+/* ============================================ */
+/* 1. GLOBAL - RESET COMPLET POUR XP */
+/* ============================================ */
+body.theme-windows-xp {
+    background: #3a6ea5 url('../image/fondxp.webp') no-repeat center center fixed !important;
+    background-size: cover !important;
+    font-family: 'Tahoma', 'Segoe UI', sans-serif !important;
+    color: #000 !important;
+    text-shadow: none !important;
+}
+
+/* SUPPRESSION TOTALE DES EFFETS (Neon, TV, Scanlines, etc.) */
+body.theme-windows-xp,
+body.theme-windows-xp *,
+body.theme-windows-xp *::before,
+body.theme-windows-xp *::after {
+    animation: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* Exceptions pour transitions utiles */
+body.theme-windows-xp a,
+body.theme-windows-xp button {
+    transition: background 0.1s ease !important;
+}
+
+/* ============================================ */
+/* 2. TASKBAR (BARRE DES TÂCHES) */
+/* ============================================ */
+body.theme-windows-xp .navbar {
+    position: fixed !important;
+    bottom: 0 !important;
+    top: auto !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 30px !important;
+    background: linear-gradient(180deg, #245edb 0%, #1941a5 100%) !important;
+    border-top: 2px solid #f90 !important;
+    z-index: 99999 !important;
+    box-shadow: none !important;
+}
+
+body.theme-windows-xp .menu,
+body.theme-windows-xp .burger {
+    display: none !important;
+}
+
+/* ============================================ */
+/* 3. BOUTON DÉMARRER (VERT) */
+/* ============================================ */
+body.theme-windows-xp .nav-logo-container {
+    background: linear-gradient(180deg, #5cb85c 0%, #3d8b3d 100%) !important;
+    border: 1px solid #2d6b2d !important;
+    border-radius: 0 8px 8px 0 !important;
+    padding: 0 15px 0 8px !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    cursor: pointer !important;
+    box-shadow: none !important;
+}
+
+body.theme-windows-xp .nav-logo-container img {
+    width: 18px !important;
+    height: 18px !important;
+    filter: none !important;
+}
+
+body.theme-windows-xp .nav-logo-container::after {
+    content: "démarrer";
+    color: #fff !important;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 13px;
+    margin-left: 5px;
+    text-shadow: 1px 1px 0 #000 !important;
+}
+
+/* ============================================ */
+/* 4. FENÊTRES AUTHENTIQUES XP */
+/* ============================================ */
+body.theme-windows-xp .authentic-window,
+body.theme-windows-xp .text-content,
+body.theme-windows-xp .image-content {
+    background: #ece9d8 !important;
+    border: 2px solid #0054e3 !important;
+    border-radius: 6px 6px 0 0 !important;
+    position: relative !important;
+    padding-top: 28px !important;
+    margin-bottom: 15px !important;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2) !important;
+    color: #000 !important;
+}
+
+/* Barre de titre */
+body.theme-windows-xp .authentic-window::before,
+body.theme-windows-xp .text-content::before,
+body.theme-windows-xp .image-content::before {
+    content: attr(data-window-title);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 24px;
+    background: linear-gradient(180deg, #0054e3 0%, #0047ab 50%, #0054e3 100%);
+    color: #fff !important;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: 'Tahoma', sans-serif;
+    display: flex;
+    align-items: center;
+    padding-left: 5px;
+    border-radius: 4px 4px 0 0;
+    text-shadow: 1px 1px 0 #000 !important;
+}
+
+/* Bouton Fermer */
+body.theme-windows-xp .authentic-window::after,
+body.theme-windows-xp .text-content::after,
+body.theme-windows-xp .image-content::after {
+    content: "×";
+    position: absolute;
+    top: 3px;
+    right: 5px;
+    width: 18px;
+    height: 18px;
+    background: linear-gradient(180deg, #e35d5d 0%, #c42b2b 100%);
+    color: #fff !important;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    border: 1px solid #fff;
+    z-index: 10;
+    text-shadow: none !important;
+}
+
+/* Titres par défaut */
+body.theme-windows-xp .text-content::before {
+    content: "Bienvenue sur le portfolio.txt - Bloc-notes";
+}
+
+body.theme-windows-xp .image-content::before {
+    content: "Aperçu des images";
+}
+
+/* ============================================ */
+/* 5. CALENDRIER / DISPONIBILITÉS */
+/* ============================================ */
+body.theme-windows-xp .availability-section {
+    background: transparent !important;
+}
+
+body.theme-windows-xp .availability-item {
+    background: #ece9d8 !important;
+    border: 1px solid #7f9db9 !important;
+    font-family: 'Tahoma', sans-serif !important;
+    color: #000 !important;
+    box-shadow: none !important;
+}
+
+body.theme-windows-xp .availability-item.today {
+    border: 2px solid #0054e3 !important;
+}
+
+/* ============================================ */
+/* 6. TEXTES ET LIENS */
+/* ============================================ */
+body.theme-windows-xp h1,
+body.theme-windows-xp h2,
+body.theme-windows-xp h3,
+body.theme-windows-xp h4,
+body.theme-windows-xp p,
+body.theme-windows-xp span,
+body.theme-windows-xp a,
+body.theme-windows-xp li {
+    color: #000 !important;
+    text-shadow: none !important;
+}
+
+body.theme-windows-xp a:hover {
+    color: #0054e3 !important;
+}
+
+/* ============================================ */
+/* 7. BOUTONS */
+/* ============================================ */
+body.theme-windows-xp button,
+body.theme-windows-xp .btn {
+    background: linear-gradient(180deg, #f5f5f5 0%, #d4d4d4 100%) !important;
+    border: 1px solid #7f9db9 !important;
+    color: #000 !important;
+    font-family: 'Tahoma', sans-serif !important;
+    font-size: 11px !important;
+    border-radius: 3px !important;
+    padding: 3px 12px !important;
+    cursor: pointer !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+body.theme-windows-xp button:hover,
+body.theme-windows-xp .btn:hover {
+    background: linear-gradient(180deg, #fff 0%, #e5e5e5 100%) !important;
+}
+
+/* ============================================ */
+/* 8. TOAST DE BIENVENUE */
+/* ============================================ */
+body.theme-windows-xp .welcome-toast {
+    background: #ffffe1 !important;
+    border: 1px solid #000 !important;
+    color: #000 !important;
+    font-family: 'Tahoma', sans-serif !important;
+    border-radius: 0 !important;
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3) !important;
+    text-shadow: none !important;
+}
+
+/* ============================================ */
+/* 9. FOOTER */
+/* ============================================ */
+body.theme-windows-xp .site-footer {
+    background: #ece9d8 !important;
+    color: #000 !important;
+    border-top: 2px solid #7f9db9 !important;
+}
+
+body.theme-windows-xp .site-footer a {
+    color: #0054e3 !important;
+}
+
+/* ============================================ */
+/* 10. CONTENU PRINCIPAL */
+/* ============================================ */
+body.theme-windows-xp .main-content {
+    padding-bottom: 50px !important;
+}
+
+/* ============================================ */
+/* 11. MOBILE */
+/* ============================================ */
+@media (max-width: 768px) {
+    body.theme-windows-xp .navbar {
+        height: 35px !important;
+    }
+
+    body.theme-windows-xp #mobile-dock {
+        display: none !important;
+    }
+}
+
+/* ============================================ */
+/* 12. ICÔNES SVG (Pas de cyan!) */
+/* ============================================ */
+body.theme-windows-xp svg,
+body.theme-windows-xp svg path {
+    fill: #000 !important;
+}
+
+body.theme-windows-xp .nav-logo-container svg path {
+    fill: #fff !important;
+}
